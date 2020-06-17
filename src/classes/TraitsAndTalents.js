@@ -283,12 +283,42 @@ const TRAITS = [
         name: 'Miracles',
         has: ['value'],
         values: DEITIES,
-        description: "The creature is wreather in magic. All its attacks count as Magical, meaning it can harm creatures only susceptible to magical attacks.",
+        description: "The creature is wreathed in magic. All its attacks count as Magical, meaning it can harm creatures only susceptible to magical attacks.",
     },
     {
         name: 'Mutation',
         has: ['value'],
         description: "The creature is 'blessed' with a Mutation. Roll on the Physical Corruption table found on page 184 of WFRP.",
+    },
+    {
+        name: 'Night Vision',
+        description: "The creature has the <i>Night Vision</i> Talent. See page 141 of WFRP.",
+    },
+    {
+        name: 'Painless',
+        description: "The creature feels no pain or can ignore it. All non-amputation penalties suffered from Critical Wounds are ignored, although Conditions are suffered as normal.",
+    },
+    {
+        name: 'Petrifying Gaze',
+        description: "The creature’s gaze can turn flesh to stone. For its Action, it can spend all its Advantage to unleash its gaze (minimum of 1). The creature performs an <b>Opposed Ballistic Skill/Initiative</b> test, adding 1 SL per Advantage spent. Its opponent gains 1 Stunned status per 2 SL by which it wins. If it wins by at least 6 SL, its target is permanently turned to stone.<br/><br/>If the target is a spellcaster, the test can be Opposed with Language (Magick) instead of Initiative as counter spells are cast.",
+    },
+    {
+        name: 'Prejudice',
+        has: ['value'],
+        description: "The creature just doesn't like the Target. See page 190 of WFRP for rules on Prejudice.",
+    },
+    {
+        name: 'Ranged',
+        has: ['rating', 'value'],
+        description: "The creature has a ranged weapon. The weapon does Damage equal to the Rating and the range in yards is marked in brackets",
+    },
+    {
+        name: 'Rear',
+        description: "For its Move, the creature may make a Stomp attack if its larger than its opponent (see <i>Size</i>).",
+    },
+    {
+        name: 'Regenerate',
+        description: "The creature is capable of healing at an extraordinary rate, even regrowing severed parts. At the start of each round, if it has more than 0 Wounds remaining, it will automatically regenerate 1d10 Wounds. If it has 0 Wounds remaining, it will regenerate a single Wound on a 1d10 roll of 8+. If it ever rolls a 10 for regenerating, it also fully regenerates a Critical Wound, losing all penalties and Conditions associated with it. Any Critical Wounds or Wounds caused by Fire may not be regenerated and should be recorded separately.",
     },
 ];
 
