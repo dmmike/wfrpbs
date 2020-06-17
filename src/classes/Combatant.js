@@ -6,7 +6,7 @@ function getId() {
 }
 
 export class Combatant {
-    constructor(name, stats, initiativeBonus = 0) {
+    constructor(name, stats, traits = [], talents = [], skills = []) {
         this.id = getId();
         this.name = name;
 
@@ -20,13 +20,39 @@ export class Combatant {
         this.advantage = 0;
         this.advantageMax = this.stats.i.b;
         this.extendedTests = [];
+        this.traits = traits;
+        this.skills = skills;
+        this.talents = talents;
+    }
+
+    get size() {
+        let size = this.traits.find(trait => {
+            return trait.name = 'Size';
+        });
+
+        switch(size) {
+            case 'Tiny':
+                return 0;
+            case 'Little':
+                return 1;
+            case 'Small':
+                return 2;
+            case 'Large':
+                return 4;
+            case 'Enormous':
+                return 5;
+            case 'Monstrous':
+                return 6;
+            default:
+                return 3;
+        }
     }
 
     determineWounds(traits, talents) {
         let s = this.stats.s.b,
             t = this.stats.t.b,
             wp = this.stats.wp.b,
-            size = this.stats.size,
+            size = this.size,
             hardy = 0;
 
         if (traits !== undefined) {
@@ -90,10 +116,7 @@ export class NPC extends Combatant {
         talents = [],
         is_unique = false
     ) {
-        super(name, stats);
-        this.skills = skills;
-        this.traits = traits;
-        this.talents = talents;
+        super(name, stats, traits, talents, skills);
         this.is_unique = is_unique;
     }
 

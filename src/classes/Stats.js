@@ -17,7 +17,6 @@ export default class Stats {
         fortune = 0,
         resilience = 0,
         resolve = 0,
-        size = 3
     ) {
         this.m = m;
 
@@ -55,8 +54,6 @@ export default class Stats {
         this.wp = new Stat(wp);
         this.fel = new Stat(fel);
 
-        this.size = size;
-
         this.fate = fate;
         this.maxFortune = fortune ? fortune : fate;
         this.currentFortune = this.maxFortune;
@@ -82,8 +79,7 @@ export default class Stats {
             data.fate,
             data.maxFortune,
             data.resilience,
-            data.maxResolve,
-            data.size
+            data.maxResolve
         )
     }
 }

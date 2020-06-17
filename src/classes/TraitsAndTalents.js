@@ -320,6 +320,70 @@ const TRAITS = [
         name: 'Regenerate',
         description: "The creature is capable of healing at an extraordinary rate, even regrowing severed parts. At the start of each round, if it has more than 0 Wounds remaining, it will automatically regenerate 1d10 Wounds. If it has 0 Wounds remaining, it will regenerate a single Wound on a 1d10 roll of 8+. If it ever rolls a 10 for regenerating, it also fully regenerates a Critical Wound, losing all penalties and Conditions associated with it. Any Critical Wounds or Wounds caused by Fire may not be regenerated and should be recorded separately.",
     },
+    {
+        name: 'Size',
+        has: ['value'],
+        values: [
+            {
+                value: 'Tiny',
+                description: "Butterfly, Mouse, Pigeon"
+            },
+            {
+                value: 'Little',
+                description: "Cat, Hawk, Human Baby"
+            },
+            {
+                value: 'Small',
+                description: "Giant Rat, Halfling, Human Child"
+            },
+            {
+                value: 'Average',
+                description: "Dwarf, Elf, Human"
+            },
+            {
+                value: 'Large',
+                description: "Horse, Ogre, Troll"
+            },
+            {
+                value: 'Enormous',
+                description: "Griffon, Wyvern, Manticore"
+            },
+            {
+                value: 'Monstrous',
+                description: "Dragon, Giant, Greater Daemon"
+            },
+        ],
+        description: "" +
+            "This trait represents creatures whose size differ from the game standard (i.e. roughly human sized). There are seven steps of <i>Size</i>, ranging from Tiny to Monstrous." +
+            "<br/><br/>" +
+            "<b>Size Combat Modifiers</b><br/>" +
+            "If larger:" +
+            "<ul>" +
+            "<li>Its weapons gain the Damaging Quality if the creature is one step larger, and Impact if two steps or more larger.</li>" +
+            "<li>It multiplies any Damage caused by the number of steps larger it is (so, 2 steps=×2, 3 steps=×3, and so on); this multiplication is calculated after all modifiers are applied.</li>" +
+            "<li>All successful strikes against smaller targets activate the Deathblow rule, even if the target survives (see page 160 of WFRP).</li>" +
+            "</ul>" +
+            "<br/><br/>" +
+            "If smaller:" +
+            "<ul><li>It gains a bonus of +10 to hit.</li></ul>" +
+            "<br/><br/>" +
+            "<b>Defending Against Big Creatures</b><br/>" +
+            "You suffer a penalty of -2 SL for each step larger your opponent is when using Melee to defend an Opposed Test. It is recommended to dodge a Giant swinging a tree, not parry it!" +
+            "<br/><br/>" +
+            "<b>Fear and Terror</b><br/>" +
+            "If the creature is perceived to be aggressive, it causes Fear in any creature smaller than it, and Terror in any creature two or more steps smaller. The rating of the Fear or Terror equals the Size step difference. So, if the creature is Large, and its opponent is Small, it will cause Terror 2. See page 191 of WFRP." +
+            "<br/><br/>" +
+            "<b>Moving in Combat</b><br/>" +
+            "A creature that is larger ignores the need to Disengage if it wishes to leave melee combat; instead, it brushes smaller combatants out of the way, moving where it wishes." +
+            "<br/><br/>" +
+            "<b>Opposed Strength</b><br/>" +
+            "During <b>Opposed Strength</b> Tests (and similar), if one creature is 2 or more size steps larger, it wins automatically. If one creature is 1 size step larger, the smaller creature must roll a Critical to contest the roll. If it does, SL are compared as normal. All other results mean the larger creature wins." +
+            "<br/><br/>" +
+            "<b>Stomp</b><br/>" +
+            "Creatures that are larger than their opponents may make one Stomp as a Free Attack, by spending 1 Advantage, as they kick downwards or otherwise bash smaller opponents out of the way. This attack has a Damage equal to their Strength Bonus +0, and uses Melee (Brawling)." +
+            "<br/><br/><b>Wounds</b><br/>" +
+            "Larger creatures have more Wounds.",
+    },
 ];
 
 export default Object.freeze({
