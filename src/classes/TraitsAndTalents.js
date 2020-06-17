@@ -225,6 +225,20 @@ const TRAITS = [
         description: "The creature can sustain more damage than most. Increase its Wounds by a number equal to its Toughness Bonus (applied before any <i>Size</i> modifiers).",
         multi: true
     },
+    {
+        name: 'Hatred',
+        has: ['value'],
+        description: "The creature really hates the Target. See Hatred on page 190 of WFRP."
+    },
+    {
+        name: 'Horns',
+        has: ['rating', 'value'],
+        description: "The creature has horns or some other sharp appendage (if its <i>Horns</i> Trait represents a different feature it will be noted in brackets). When the creature gains an Advantage for Charging, it may make a Free Attack with its Horns, performed as normal, using Rating to calculate Damage (its Strength Bonus is already included)."
+    },
+    {
+        name: 'Hungry',
+        description: "The creature is always hungry for fresh meat. If it kills or incapacitates a living opponent (or encounters a fresh body), it must pass a <b>Average (+20) Willpower</b> Test or feast, losing its next Action and Move.",
+    },
 ];
 
 export default Object.freeze({
