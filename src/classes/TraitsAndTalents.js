@@ -1,3 +1,4 @@
+const DEITIES = ['Manann', 'Morr', 'Myrmidia', 'Ranald', 'Rhya', 'Shallya', 'Sigmar', 'Taal', 'Ulric', 'Verena'];
 const TRAITS = [
     {
         name: 'Afraid',
@@ -47,7 +48,7 @@ const TRAITS = [
     {
         name: 'Blessed',
         has: ['value'],
-        values: ['Manann', 'Morr', 'Myrmidia', 'Ranald', 'Rhya', 'Shallya', 'Sigmar', 'Taal', 'Ulric', 'Verena'],
+        values: DEITIES,
         description: "The creature loves to win a fight. As long as it has more Advantage than its opponent, it is Immune to Psychology."
     },
     {
@@ -238,6 +239,56 @@ const TRAITS = [
     {
         name: 'Hungry',
         description: "The creature is always hungry for fresh meat. If it kills or incapacitates a living opponent (or encounters a fresh body), it must pass a <b>Average (+20) Willpower</b> Test or feast, losing its next Action and Move.",
+    },
+    {
+        name: 'Immunity',
+        has: ['value'],
+        description: "The creature is completely immune to a certain type of Damage, such as poison, magic, or electricity. All Damage of that type, including from a Critical Wound, is ignored.",
+    },
+    {
+        name: 'Immunity to Psychology',
+        description: "Whether brave, exceedingly stupid, or just caught up in the moment, the creature is utterly fearless. It ignores the Psychology rules.",
+    },
+    {
+        name: 'Infected',
+        description: "The creature, or its weapon, carries a nasty infection. If it causes a living opponent to lose Wounds, it must pass an <b>Easy (+40) Endurance</b> Test or contract a Festering Wound (see page 187 of WFRP).",
+    },
+    {
+        name: 'Infestation',
+        description: "The creature’s hide is infested with biting fleas or similar. All opponents suffer a penalty of –10 to hit it in melee combat as the parasites distract and overwhelm them.",
+    },
+    {
+        name: 'Leader',
+        description: "The creature is a practiced leader. It receives a bonus of +10 to Fellowship and Willpower. <b>Note:</b> this Trait cannot be taken by creatures with the <i>Bestial</i> Trait.",
+        stats: (stats) => {
+            stats.fel.value += 10;
+            stats.wp.value += 10;
+        }
+    },
+    {
+        name: 'Magical',
+        description: "The creature is wreather in magic. All its attacks count as Magical, meaning it can harm creatures only susceptible to magical attacks.",
+    },
+    {
+        name: 'Magic Resistance',
+        has: ['rating'],
+        description: "Magic has a reduced effect on the creature. The SL of any spell affecting it is reduced by the Rating given. So, <i>Magic Resistance 2</i> would reduce the SL by 2.",
+    },
+    {
+        name: 'Mental Corruption',
+        has: ['value'],
+        description: "The creature has Chaos on the mind. Roll on the Mental Corruption table found on page 185 of WFRP.",
+    },
+    {
+        name: 'Miracles',
+        has: ['value'],
+        values: DEITIES,
+        description: "The creature is wreather in magic. All its attacks count as Magical, meaning it can harm creatures only susceptible to magical attacks.",
+    },
+    {
+        name: 'Mutation',
+        has: ['value'],
+        description: "The creature is 'blessed' with a Mutation. Roll on the Physical Corruption table found on page 184 of WFRP.",
     },
 ];
 
