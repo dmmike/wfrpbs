@@ -53,12 +53,17 @@ export class Combatant {
             t = this.stats.t.b,
             wp = this.stats.wp.b,
             size = this.size,
-            hardy = 0;
+            hardy = 0,
+            swarmMod = 1;
 
         if (traits !== undefined) {
             if (traits.find(trait => trait.name.toLowerCase() === 'construct')) {
                 // Constructs use Strength Bonus instead of Willpower Bonus
                 wp = s;
+            }
+
+            if (traits.find(trait => trait.name.toLowerCase() === 'swarm')) {
+                swarmMod = 5;
             }
 
             hardy += traits.filter(trait => trait.name.toLowerCase() === 'hardy').length;
@@ -74,7 +79,7 @@ export class Combatant {
             (Math.floor(size / 3) >= 1 ? 1 : 0) * s +
             Math.min(size, 2) * t +
             (Math.floor(size / 2) >= 1 ? 1 : 0) * wp
-        ) * Math.pow(2, Math.max(size - 3, 0));
+        ) * Math.pow(2, Math.max(size - 3, 0)) * swarmMod;
     }
 
     getInitiative(type) {

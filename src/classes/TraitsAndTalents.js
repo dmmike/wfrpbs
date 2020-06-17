@@ -384,6 +384,131 @@ const TRAITS = [
             "<br/><br/><b>Wounds</b><br/>" +
             "Larger creatures have more Wounds.",
     },
+    {
+        name: 'Skittish',
+        description: "The creature is easily scared by magic or loud noises. If such occurs, it receives +3 <i>Broken</i> Conditions.",
+    },
+    {
+        name: 'Spellcaster',
+        has: ['values'],
+        values: [
+            'Beasts',
+            'Death',
+            'Fire',
+            'Heavens',
+            'Metal',
+            'Life',
+            'Light',
+            'Shadows',
+            'Hedge',
+            'Witch',
+            'Daemonology',
+            'Necromancy',
+            'Nurgle',
+            'Slaanesh',
+            'Tzeentch',
+        ],
+        description: "The creature can cast spells; the specific Lore of Magic will be indicated in the brackets.",
+    },
+    {
+        name: 'Stealth',
+        description: "The creature is especially stealthy. It adds a number equal to its Agility Bonus to the SL of all Stealth Tests.",
+    },
+    {
+        name: 'Stride',
+        description: "The creature has a long stride, perhaps because it is a quadruped or has especially long legs. Multiply Run Movement by 1.5 when Running.",
+    },
+    {
+        name: 'Stupid',
+        description: "While not entirely devoid of self-awareness (and so lacking the Bestial trait), the creature is stupid. If it is near any allies without the <i>Stupid</i> Trait, they guide it and nothing happens. Otherwise, it must pass an <b>Easy (+40) Intelligence</b> Test at the start of each round, or become very confused. Should this occur it will drool, perhaps sitting down or picking its nose, doing little of use, losing both its Move and Action for that Turn.",
+    },
+    {
+        name: 'Swamp-strider',
+        description: "The creature is at home in a swamp. It suffers no Movement penalties for moving through boggy ground.",
+    },
+    {
+        name: 'Swarm',
+        description: "Swarms are large numbers of the same creature acting as one. The swarm counts as a single Creature that ignores the Psychology rules (see page 190 of WFRP), and can ignore the Engaged rules when using its Move. If the Swarm successfully strikes an opponent it activates the Deathblow rule (even if it has not killed its opponent — see page 160 of WFRP). All opponents Engaged with a Swarm automatically lose 1 Wound at the end of every Round as the Swarm overwhelms anything close. The Swarm has five times the Wounds of a normal example of the creature and gains +10 Weapon Skill. Any attempts to shoot the Swarm gain a bonus of +40 to hit. Swarms ignore all the <i>Size</i> Creature Trait rules.",
+    },
+    {
+        name: 'Tail Attack',
+        has: ['rating'],
+        description: "The creature’s tail is capable of sweeping foes from their feet. On its turn, it may make a Free Attack by spending 1 Advantage. The Tail does Rating Damage, <i>which includes its Strength Bonus already</i>. Opponents with a smaller <i>Size</i> than the creature, that suffer any Wounds from the attack, also gain the <i>Prone</i> Condition.",
+    },
+    {
+        name: 'Tentacles',
+        has: ['#', 'rating'],
+        description: "The creature has a number of tentacles equal to #. It gains one Free Attack Action per tentacle. Each tentacle’s attack does Rating Damage, <i>which includes its Strength Bonus already</i>. If it causes Damage, it can also give its opponent an <i>Entangled</i> Condition, which will initiate a Grapple between the target and that tentacle. If a tentacle is Grappling, use the tentacle’s Free Attack Action to resolve that Grapple, not the creature’s Action (see page 338 of WFRP).",
+    },
+    {
+        name: 'Territorial',
+        description: "This creature is protective of a particular area or location. It will fight to the death to protect it and will not normally pursue enemies if they flee this area.",
+    },
+    {
+        name: 'Terror',
+        has: ['rating'],
+        description: "The creature supernaturally causes bone-chilling <i>Terror</i> in other creatures, at the Rating given. See page 191 of WFRP.",
+    },
+    {
+        name: 'Trained',
+        has: ['value'],
+        values: [
+            {
+                value: 'Broken',
+                description: 'The animal is trained to ignore its Bestial trait. It receives 2d10 Fellowship.',
+            },
+            {
+                value: 'Drive',
+                description: 'The animal is trained to pull a coach, cart, plough, buggy, or similar.',
+            },
+            {
+                value: 'Entertain',
+                description: 'The animal is trained to entertain others. It adds a +10 bonus to appropriate Entertain, Perform, or Play Tests.',
+            },
+            {
+                value: 'Fetch',
+                description: 'The animal is trained to fetch. This is normally reserved for Dogs and similar.',
+            },
+            {
+                value: 'Guard',
+                description: 'The animal is trained to stay in one place or prowel around as a guard, granting it the Territorial Trait.',
+            },
+            {
+                value: 'Home',
+                description: 'The animal is trained to return home if it is released or lost.',
+            },
+            {
+                value: 'Magic',
+                description: 'The animal is trained to ignore <i>Skittish</i> when it comes to magic, which is required for most horses used by Wizards.',
+            },
+            {
+                value: 'Mount',
+                description: 'The animal will accept a rider. Some creatures are especially belligerent, and will not accept a rider without the correct skill. So, to ride a Griffon, you need the Ride (Griffon) skill.',
+            },
+            {
+                value: 'War',
+                description: 'The animal is trained for war, gainin +10 Weapon Skill. It can also ignore <i>Skittish</i> for loud noises.',
+            },
+        ],
+        description: "This trait represents animals that have been trained through the Animal Training Skill. The skills the animal knows is marked in the brackets. Feel free to create your own trained skills.",
+    },
+    {
+        name: 'Tongue Attack',
+        has: ['rating', 'value'],
+        description: "The creature’s prehensile tongue can wrap itself around prey, dragging it to a grisly end. On its turn, it may make a Free Attack by spending 1 Advantage. This is a ranged attack that does Damage equal to its Rating (the range is in brackets). If the attack hits, the target receives 1 <i>Entangled</i> Condition and, if a smaller <i>Size</i>, is dragged towards the creature, and is Engaged in melee combat. The creature can then choose whether to release the target, perform a Free Attack using its <i>Weapon</i> Trait, or to keep the target wrapped in its tongue, initiating a Grapple (see page 163 of WFRP).",
+    },
+    {
+        name: 'Tough',
+        description: "The creature is more resistant to damage than normal, and unlikely to back down. It receives +10 Toughness and Willpower.",
+        stats(stats) {
+            stats.t.value += 10;
+            stats.wp.value += 10;
+        }
+    },
+    {
+        name: 'Tracker',
+        description: "Trackers are adept at following their prey, generally through scent or hearing. They add SL equal to their Initiative Bonus to all Track Tests.",
+    },
 ];
 
 export default Object.freeze({
