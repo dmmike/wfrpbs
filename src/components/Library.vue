@@ -24,7 +24,7 @@
 
         <div id="library-content">
             <transition name="fade">
-                <bestiary-content :bestiary="library.bestiary" @new-npc="$emit('npc')" v-if="tab===0" @edit="$emit('edit', $event)"></bestiary-content>
+                <bestiary-content :bestiary="library.bestiary" v-if="tab===0"></bestiary-content>
                 <characters-content :characters="library.characters" v-if="tab===1"></characters-content>
                 <encounters-content :encounters="library.encounters" v-if="tab===2"></encounters-content>
             </transition>

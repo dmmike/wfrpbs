@@ -21,7 +21,7 @@
             </ul>
         </div>
         <div id="button-row">
-            <button id="add-combatant" @click="$emit('new-npc')">+ Add New</button>
+            <button id="add-combatant" @click="newCharacter">+ Add New</button>
         </div>
     </div>
 </template>
@@ -52,7 +52,10 @@
                 return Object.keys(this.filteredBestiary).findIndex(key => key === id )%2;
             },
             edit(id) {
-                this.$emit('edit', id);
+                this.$root.$emit('edit-combatant', id);
+            },
+            newCharacter() {
+                this.$root.$emit('new-combatant', 'npc');
             }
         }
     }

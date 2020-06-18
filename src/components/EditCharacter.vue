@@ -42,7 +42,8 @@
         },
         methods: {
             save() {
-                this.$emit('save-combatant', this.characterData);
+                this.$root.$emit('save-combatant', this.characterData);
+                this.$emit('close');
             }
         }
     }

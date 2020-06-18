@@ -136,7 +136,7 @@
             },
             skills() {
                 if (this.isCharacter) return [];
-                return this.combatant.skills.sort((a, b) => {
+                return _.clone(this.combatant.skills).sort((a, b) => {
                     return a.name.localeCompare(b.name);
                 });
             },
@@ -156,13 +156,13 @@
             },
             talents() {
                 if (this.isCharacter) return [];
-                return this.combatant.talents.sort();
+                return _.clone(this.combatant.talents).sort();
             },
             isCharacter() {
                 return this.combatant instanceof Character;
             },
             filteredTraits() {
-                return this.traitOptions.filter(trait => {
+                return _.clone(this.traitOptions).filter(trait => {
                     let filter = this.traitFilter === '' || (trait.name.toLowerCase().includes(this.traitFilter.toLowerCase()) || trait.description.toLowerCase().includes(this.traitFilter.toLowerCase())),
                         available = trait.multi === true || !this.traits.some(tr => tr.name === trait.name);
                     return filter && available;
@@ -225,7 +225,6 @@
                 }
             },
             updateTrait(newData) {
-                console.log(newData);
                 this.$set(this.combatant.traits, this.findTraitIndex(newData.name), newData);
             },
             findTraitIndex(name) {
@@ -299,7 +298,7 @@
     }
 
     .inline-input {
-        width: 1em;
+        width: 1.1em;
         display: inline-block;
         text-align: center;
     }

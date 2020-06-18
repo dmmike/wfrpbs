@@ -1,7 +1,7 @@
 <template>
     <div id="column-left">
         <transition name="fade" mode="out-in">
-            <library v-if="libraryOpen" :library="library" @npc="$emit('new', 'npc')" @close="$emit('close')" @edit="$emit('edit', $event)"></library>
+            <library v-if="libraryOpen" :library="library" @npc="$emit('new', 'npc')" @close="$emit('close')"></library>
             <active-combatant v-else :active-combatant="selectedCombatant"></active-combatant>
         </transition>
     </div>

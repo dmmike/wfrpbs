@@ -2,7 +2,7 @@
     <div id="home">
         <menu-bar @menu="libraryOpen=!libraryOpen"></menu-bar>
         <div id="column-container">
-            <column-left class="small-column" :selected-combatant="selectedCombatant" :library="library" :library-open="libraryOpen" @new="newCharacter" @close="libraryOpen = false" @edit="edit"></column-left>
+            <column-left class="small-column" :selected-combatant="selectedCombatant" :library="library" :library-open="libraryOpen" @new="newCharacter" @close="libraryOpen = false"></column-left>
             <column-center ref="columnCenter" class="main-column" @save-combatant="saveCombatant"></column-center>
             <column-right class="small-column"></column-right>
         </div>
@@ -36,6 +36,9 @@
         },
         mounted() {
             this.loadData();
+
+            this.$root.$on('save-combatant', this.saveCombatant);
+            this.$root.$on('edit-combatant', this.edit);
         },
         methods: {
             newCharacter(type = 'npc') {
@@ -49,24 +52,10 @@
                     encounters: {},
                 }
 
-                if (!data) {
-                    let heske = new NPC(
-                        'Heske Glazer',
-                        new Stats(4, 29, 34, 33, 42, 34, 35, 49, 31, 38, 48),
-                        [{name: 'Haggle', skill: 67}, {name: 'Trade (Glassblowing)', skill: 92}],
-                        [{name: 'Weapon', value: 'Fist', rating: 3}],
-                        [],
-                        true
-                    );
-
-                    this.$set(library.bestiary, heske.id, heske);
-                }
-                else {
-                    Object.keys(data.bestiary).forEach(id => {
-                        let npc = NPC.revive(data.bestiary[id]);
-                        this.$set(library.bestiary, npc.id, npc);
-                    })
-                }
+                Object.keys(data.bestiary).forEach(id => {
+                    let npc = NPC.revive(data.bestiary[id]);
+                    this.$set(library.bestiary, npc.id, npc);
+                })
 
                 this.library = library;
             },

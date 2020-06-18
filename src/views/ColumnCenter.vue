@@ -3,7 +3,6 @@
         <edit-character v-if="showCharacterEditor"
                         :character="character"
                         :type="createType"
-                        @save-combatant="saveCombatant"
                         @close="showCharacterEditor = false"
         ></edit-character>
         <div id="combat" v-else>
@@ -31,6 +30,7 @@
     import Roller from "@/classes/Roller";
     import CombatRow from "@/components/CombatRow";
     import EditCharacter from "@/components/EditCharacter";
+    import {NPC, Character} from "@/classes/Combatant";
 
     export default {
         name: "ColumnCenter",
@@ -61,6 +61,10 @@
                 showCharacterEditor: false,
                 createType: 'npc',
             }
+        },
+        mounted() {
+            this.$root.$on('edit-combatant', this.edit);
+            this.$root.$on('new-combatant', this.newCharacter);
         },
         methods: {
             determineInitiative() {
@@ -136,6 +140,17 @@
                 this.character = null;
                 this.showCharacterEditor = false;
                 this.$emit('save-combatant', combatant);
+            },
+            edit(id) {
+                let library = JSON.parse(localStorage.getItem('library'));
+                if (library.bestiary[id] !== undefined) {
+                    this.character = NPC.revive(library.bestiary[id]);
+                }
+                else {
+                    this.character = Character.revive(library.characters[id])
+                }
+                this.createType = null;
+                this.showCharacterEditor = true;
             }
         }
     }
