@@ -22,74 +22,81 @@
             </tbody>
         </table>
 
-        <div v-if="isCharacter">
-            <div v-if="talents.length">
-                <strong>Talents: </strong>
-                <span v-for="(talent, index) in talents" :key="index">
-                    <span :class="{editable: edit}" :contenteditable="edit">{{talent}} </span>
-                    <span v-if="edit" @click="removeTalent(index)">x</span>
-                    <span v-if="talents[index +1]">, </span>
+        <div v-if="skills.length">
+            <strong>Skills: </strong>
+            <span :class="{editable: edit}" v-for="(skill, index) in skills" @click="skillClicked(skill.name, $event)">
+                    <v-tooltip bottom open-delay="1000" max-width="800px">
+                        <template v-slot:activator="{ on, attrs }">
+                            <span v-on="on" v-bind="attrs">
+                                <span>{{skill.name}}</span>
+                                <span>&nbsp;(<input class="inline-input" :disabled="!edit" type="text"
+                                                    @click="skillClicked(skill.name, $event)"
+                                                    @keypress="isNumber($event)" v-model="skill.skill">)</span>
+                                <span v-if="skills[index +1]">, </span>
+                            </span>
+                        </template>
+                        <template v-slot:default>
+                            CTRL + Click or ALT + Click to remove, or alter score directly
+                        </template>
+                    </v-tooltip>
                 </span>
-            </div>
         </div>
-
-        <div class="block" v-else>
-            <div v-if="skills.length">
-                <strong>Skills: </strong>
-                <span v-for="(skill, index) in skills" :key="index">
-                </span>
-            </div>
-            <div v-if="talents.length">
-                <strong>Talents: </strong>
-                <span v-for="(talent, index) in talents" :key="index"></span>
-            </div>
-            <div v-if="traits.length">
-                <strong>Traits: </strong>
-                <trait-display v-for="(trait, index) in traits"
-                            :key="trait.name"
+        <div v-if="talents.length">
+            <strong>Talents: </strong>
+            <span v-for="(talent, index) in talents" :key="index"></span>
+        </div>
+        <div v-if="traits.length">
+            <strong>Traits: </strong>
+            <trait-display v-for="(trait, index) in traits"
+                           ref="trait_displays"
+                           :key="trait.name"
                            :edit="edit"
                            :index="index"
                            :trait-data="trait"
                            :all-traits="traits"
                            @save="updateTrait"
-                />
-            </div>
+                           @removeTrait="removeTrait"
+                           @removeAll="removeAll"/>
+        </div>
 
-            <div id="npc-buttons" v-if="edit" style="display:flex">
-                <dropdown class="npc-button" :class-name="'npc-button'" @click="resetSkill">
-                    <template slot="btn" style="text-align:center">+skill</template>
-                    <template slot="body">
-                        <label>Name: <input type="text" v-model="skillName"></label>
-                        <label>Score: <input type="text" @keypress="isNumber($event)" v-model="skillScore"></label>
-                        <button style="width:100%" @click="addSkill">opslaan</button>
-                    </template>
-                </dropdown>
-                <dropdown class="npc-button" :class-name="'npc-button'">
-                    <template slot="btn">+talent</template>
-                    <template slot="body">
+        <div id="edit-buttons" v-if="edit" style="display:flex">
+            <v-menu offset-y offset-overflow :close-on-content-click="false" attach="#edit-buttons"
+                    content-class="drop-menu">
+                <template v-slot:activator="{on, attrs}">
+                    <button type="button" v-bind="attrs" v-on="on" class="npc-button">+skill</button>
+                </template>
+                <template>
+                    <label><strong>Name:</strong><input type="text" v-model="skillName"></label>
+                    <label><strong>Score:</strong><input type="text" @keypress="isNumber($event)" v-model="skillScore"></label>
+                    <button style="width:100%" @click="addSkill" :disabled="invalidSkill">Save</button>
+                </template>
+            </v-menu>
+            <!--                <dropdown class="npc-button" :class-name="'npc-button'">-->
+            <!--                    <template slot="btn">+talent</template>-->
+            <!--                    <template slot="body">-->
+            <!---->
+            <!--                    </template>-->
+            <!--                </dropdown>-->
+            <v-menu offset-y offset-overflow nudge-left="270%" :close-on-content-click="false" content-class="drop-menu">
+                <template v-slot:activator="{on, attrs}">
+                    <button type="button" v-bind="attrs" v-on="on" class="npc-button">+trait</button>
+                </template>
+                <template>
+                    <input type="search" v-model="traitFilter" class="trait-filter"
+                           placeholder="Type to filter by name and description">
+                    <ul style="" class="trait-list">
+                        <li :id="'trait' + trait.name" v-for="trait in filteredTraits" :key="trait.name">
+                            <v-tooltip bottom open-delay="500" max-width="80%">
+                                <template v-slot:activator="{ on, attrs }">
+                                    <span v-bind="attrs" v-on="on" @click="addTrait(trait)">{{trait.name}}</span>
+                                </template>
+                                <span v-html="trait.description"></span>
+                            </v-tooltip>
+                        </li>
+                    </ul>
+                </template>
+            </v-menu>
 
-                    </template>
-                </dropdown>
-                <dropdown class="npc-button" :class-name="'npc-button'" :x="-200">
-                    <template slot="btn">+trait</template>
-                    <template slot="body">
-                        <input type="search" v-model="traitFilter" style="width:100%;">
-                        <ul style="columns:4;-webkit-columns: 4;-moz-columns: 4;">
-                            <li :id="'trait' + trait.name" v-for="trait in filteredTraits" :key="trait.name"
-                                @click="addTrait(trait)">
-                                <v-tooltip bottom open-delay="500" max-width="500px">
-                                    <template v-slot:activator="{ on, attrs }">
-                                        <span v-bind="attrs"
-                                              v-on="on"
-                                        >{{trait.name}}</span>
-                                    </template>
-                                    <span v-html="trait.description"></span>
-                                </v-tooltip>
-                            </li>
-                        </ul>
-                    </template>
-                </dropdown>
-            </div>
         </div>
     </div>
 </template>
@@ -161,6 +168,9 @@
                     return filter && available;
 
                 });
+            },
+            invalidSkill() {
+                return !this.skillName || !this.skillScore || this.combatant.skills.findIndex(sk => sk.name.toLowerCase() === this.skillName.toLowerCase()) !== -1
             }
         },
         methods: {
@@ -173,6 +183,7 @@
                 }
             },
             addSkill() {
+                if (this.invalidSkill) return;
                 this.combatant.skills.push({name: this.skillName, skill: this.skillScore});
                 this.resetSkill();
             },
@@ -180,16 +191,51 @@
                 this.skillName = '';
                 this.skillScore = 30;
             },
-            removeTrait(index) {
-                this.combatant.traits.splice(index, 1);
+            removeTrait(trait) {
+                let raw = TraitsAndTalents.getTrait(trait);
+                if (raw.stats) {
+                    raw.stats(this.combatant.stats, true);
+                }
+                this.combatant.traits.splice(this.findTraitIndex(trait), 1);
             },
-            addTrait(trait, value, rating) {
-                this.combatant.traits.push({name: trait.name, value: value, rating: rating});
+            removeAll(trait) {
+                let count = this.traits.find(t => t.name.toLowerCase() === trait.toLowerCase()).count;
+                let raw = TraitsAndTalents.getTrait(trait);
+                if (raw.stats) {
+                    while (count > 0) {
+                        raw.stats(this.combatant.stats, true);
+                        count--;
+                    }
+                }
+                this.$set(this.combatant, 'traits', this.combatant.traits.filter(t => t.name.toLowerCase() !== trait.toLowerCase()));
+            },
+            addTrait(trait) {
+                let raw = TraitsAndTalents.getTrait(trait.name);
+                let index = this.findTraitIndex(trait.name);
+                if (!raw.multi && index > -1) return;
+
+                if (raw.stats) {
+                    raw.stats(this.combatant.stats);
+                }
+
+                if (index !== -1 || !raw.has) {
+                    this.combatant.traits.push({name: trait.name.valueOf()});
+                } else {
+                    this.combatant.traits.push({name: trait.name.valueOf(), is_create: true});
+                }
             },
             updateTrait(newData) {
-                let index = this.combatant.traits.findIndex(trait => trait.name === newData.name);
-                this.$set(this.combatant.traits, index, newData);
-            }
+                console.log(newData);
+                this.$set(this.combatant.traits, this.findTraitIndex(newData.name), newData);
+            },
+            findTraitIndex(name) {
+                return this.combatant.traits.findIndex(trait => trait.name.toLowerCase() === name.toLowerCase());
+            },
+            skillClicked(skill, event) {
+                if (event.ctrlKey || event.altKey) {
+                    this.combatant.skills.splice(this.combatant.skills.findIndex(sk => sk.name.toLowerCase() === skill.toLowerCase()), 1);
+                }
+            },
         }
     }
 </script>
@@ -212,6 +258,7 @@
     .stats-table {
         text-align: center;
         margin-bottom: 0.5em;
+        border-collapse: collapse;
     }
 
     tr:last-child {
@@ -242,6 +289,8 @@
 
     .npc-button {
         width: 33%;
+        display: inline-block;
+        text-align: center;
     }
 
     input {
@@ -249,13 +298,49 @@
         width: 100%;
     }
 
+    .inline-input {
+        width: 1em;
+        display: inline-block;
+        text-align: center;
+    }
+
 </style>
 
 <style>
-    .npc-button-bp__btn {
-        display: inline-block;
-        width: 100%;
-        text-align: center;
+    .drop-menu {
+        overflow: hidden;
+        box-shadow: none !important;
+        background-color: transparent;
+        background-image: url('~@/assets/background-columns.png');
+        background-size: 100% 100%;
+        padding: 15px;
+        min-width: 300px;
+        min-height: 240px;
+    }
+
+    .drop-menu label {
+        display:block;
+    }
+    .drop-menu label input {
+        margin-left: 10px;
+        display:inline-block;
+        width:auto;
+    }
+
+    .drop-menu .trait-list {
+        columns: 5;
+        -webkit-columns: 5;
+        -moz-columns: 5;
+        list-style-type: disc;
+    }
+
+    .drop-menu li {
+        list-style-type: none;
+        overflow-x: hidden;
+    }
+
+    .drop-menu .trait-filter {
+        margin-bottom: 10px;
     }
 
     .edit-tooltip {

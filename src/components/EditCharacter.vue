@@ -2,6 +2,7 @@
     <div id="character-editor">
         <h2>EDIT COMBATANT <img class="close-button" src="@/assets/close.png" @click="$emit('close')"></h2>
         <combatant-view v-if="characterData" :combatant="characterData" :edit="true"></combatant-view>
+        <button type="button" @click="save">Save character</button>
     </div>
 </template>
 

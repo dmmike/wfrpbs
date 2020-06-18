@@ -13,9 +13,9 @@ export class Combatant {
         this.stats = stats;
         Object.defineProperty(this.stats, 'w', {get: () => {return this.determineWounds(this.traits, this.talents)}});
 
-        this.initiativeBonus = initiativeBonus;
-        this.conditions = [];
-        this.criticalWounds = [];
+        this.initiativeBonus = 0;
+        this.conditions = {};
+        this.criticalWounds = {};
         this.currentWounds = this.stats.w;
         this.advantage = 0;
         this.advantageMax = this.stats.i.b;
@@ -26,11 +26,13 @@ export class Combatant {
     }
 
     get size() {
+        if (!this.traits) return 3;
         let size = this.traits.find(trait => {
-            return trait.name = 'Size';
+            return trait.name.toLowerCase() === 'size';
         });
 
-        switch(size) {
+        if (!size) return 3;
+        switch(size.value) {
             case 'Tiny':
                 return 0;
             case 'Little':

@@ -3,10 +3,17 @@
         <div id="list">
             <input type="search" v-model="filter" style="width:100%;">
             <ul id="bestiary">
-                <li v-for="(combatant, id) in filteredBestiary" :key="id">
-                    <v-tooltip top>
+                <li :class="index%2 === 0 ? 'odd-row' : 'even-row'" v-for="(combatant, index) in filteredBestiary" :key="index">
+                    <v-tooltip open-delay="500" right>
                         <template v-slot:activator="{ on, attrs }">
-                            <span style="width:100%" v-bind="attrs" v-on="on">{{combatant.name}}</span>
+                            <span class="combatant-line" style="width:100%" v-bind="attrs" v-on="on" @mouseenter="hover = index">
+                                {{combatant.name}}
+                                <span v-if="hover === index" class="combatant-options">
+                                    <span @click="edit(combatant.id)">
+                                        Edit
+                                    </span>
+                                </span>
+                            </span>
                         </template>
                         <combatant-view style="color:black" :combatant="combatant" :edit="false"></combatant-view>
                     </v-tooltip>
@@ -30,6 +37,7 @@
         data() {
             return {
                 filter: '',
+                hover: null,
             }
         },
         computed: {
@@ -37,6 +45,14 @@
                 return Object.values(this.bestiary).filter(c => this.filter === '' || c.name.includes(this.filter)).sort((a, b) => {
                     return a.name.localeCompare(b.name);
                 });
+            }
+        },
+        methods: {
+            isOddRow(id) {
+                return Object.keys(this.filteredBestiary).findIndex(key => key === id )%2;
+            },
+            edit(id) {
+                this.$emit('edit', id);
             }
         }
     }
@@ -64,8 +80,13 @@
         overflow-x: hidden;
     }
 
-    #bestiary:nth-child(even) {
+    .odd-row {
         background-color: rgba(188, 202, 199, 0.8);
+    }
+
+
+    .even-row {
+        background-color: rgba(255, 255, 255, 0.8);
     }
 
     #list {
@@ -78,5 +99,9 @@
 
     #add-combatant {
         float: right;
+    }
+
+    .combatant-options {
+        float:right;
     }
 </style>

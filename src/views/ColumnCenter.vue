@@ -3,7 +3,7 @@
         <edit-character v-if="showCharacterEditor"
                         :character="character"
                         :type="createType"
-                        @save="saveCombatant"
+                        @save-combatant="saveCombatant"
                         @close="showCharacterEditor = false"
         ></edit-character>
         <div id="combat" v-else>
@@ -133,6 +133,8 @@
                 this.showCharacterEditor = true;
             },
             saveCombatant(combatant) {
+                this.character = null;
+                this.showCharacterEditor = false;
                 this.$emit('save-combatant', combatant);
             }
         }

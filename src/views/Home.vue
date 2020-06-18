@@ -2,8 +2,8 @@
     <div id="home">
         <menu-bar @menu="libraryOpen=!libraryOpen"></menu-bar>
         <div id="column-container">
-            <column-left class="small-column" :selected-combatant="selectedCombatant" :library="library" :library-open="libraryOpen" @new="newCharacter" @close="libraryOpen = false"></column-left>
-            <column-center ref="columnCenter" class="main-column"></column-center>
+            <column-left class="small-column" :selected-combatant="selectedCombatant" :library="library" :library-open="libraryOpen" @new="newCharacter" @close="libraryOpen = false" @edit="edit"></column-left>
+            <column-center ref="columnCenter" class="main-column" @save-combatant="saveCombatant"></column-center>
             <column-right class="small-column"></column-right>
         </div>
     </div>
@@ -34,14 +34,8 @@
                 library: null,
             }
         },
-        watch: {
-            library() {
-                localStorage.setItem('library', JSON.stringify(this.library));
-            }
-        },
         mounted() {
             this.loadData();
-            this.newCharacter();
         },
         methods: {
             newCharacter(type = 'npc') {
@@ -61,6 +55,8 @@
                         new Stats(4, 29, 34, 33, 42, 34, 35, 49, 31, 38, 48),
                         [{name: 'Haggle', skill: 67}, {name: 'Trade (Glassblowing)', skill: 92}],
                         [{name: 'Weapon', value: 'Fist', rating: 3}],
+                        [],
+                        true
                     );
 
                     this.$set(library.bestiary, heske.id, heske);
@@ -74,6 +70,20 @@
 
                 this.library = library;
             },
+            saveCombatant(data) {
+                if (data instanceof NPC) {
+                    this.$set(this.library.bestiary, data.id, data);
+                }
+                else {
+                    this.$set(this.library.characters, data.id, data);
+                }
+                localStorage.setItem('library', JSON.stringify(this.library));
+            },
+            edit(id) {
+                this.$refs.columnCenter.character = this.library.bestiary[id] ? this.library.bestiary[id] : this.library.characters[id];
+                this.$refs.columnCenter.createType = null;
+                this.$refs.columnCenter.showCharacterEditor = true;
+            }
         }
     }
 </script>

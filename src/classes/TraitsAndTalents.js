@@ -34,10 +34,10 @@ const TRAITS = [
     {
         name: 'Big',
         description: "The creature is a large example of its species. It receives +10 Strength and Toughness, and -5 Agility.",
-        stats: (stats) => {
-            stats.s.value += 10;
-            stats.t.value += 10;
-            stats.agi.value -= 5;
+        stats: (stats, revert = false) => {
+            stats.s.value += 10 * (revert ? -1 : 1);
+            stats.t.value += 10 * (revert ? -1 : 1);
+            stats.agi.value -= 5 * (revert ? -1 : 1);
         }
     },
     {
@@ -89,11 +89,11 @@ const TRAITS = [
     {
         name: 'Brute',
         description: "The creature is heavy and brutish. It receives -1 Movement, -10 Agility, and +10 Strength and Toughness.",
-        stats: (stats) => {
-            stats.m -= 1;
-            stats.s.value += 10;
-            stats.t.value += 10;
-            stats.agi.value -= 10;
+        stats: (stats, revert = false) => {
+            stats.m -= 1 * (revert ? -1 : 1);
+            stats.s.value += 10 * (revert ? -1 : 1);
+            stats.t.value += 10 * (revert ? -1 : 1);
+            stats.agi.value -= 10 * (revert ? -1 : 1);
         }
     },
     {
@@ -107,9 +107,9 @@ const TRAITS = [
     {
         name: 'Clever',
         description: "The creature is particularly sharp-minded. It receives +20 Intelligence and +10 Initiative.",
-        stats: (stats) => {
-            stats.i.value += 10;
-            stats.int.value += 20;
+        stats: (stats, revert = false) => {
+            stats.i.value += 10 * (revert ? -1 : 1);
+            stats.int.value += 20 * (revert ? -1 : 1);
         }
     },
     {
@@ -141,10 +141,10 @@ const TRAITS = [
     {
         name: 'Cunning',
         description: "The creature is exceptionally cunning. It receives +10 Fellowship, Intelligence, and Initiative.",
-        stats: (stats) => {
-            stats.fel.value += 10;
-            stats.int.value += 10;
-            stats.i.value += 10;
+        stats: (stats, revert = false) => {
+            stats.fel.value += 10 * (revert ? -1 : 1);
+            stats.int.value += 10 * (revert ? -1 : 1);
+            stats.i.value += 10 * (revert ? -1 : 1);
         }
     },
     {
@@ -181,10 +181,10 @@ const TRAITS = [
     {
         name: 'Elite',
         description: "The creature is a hard-nosed veteran. It receives +20 to Weapon Skill, Ballistic Skill, and Willpower.",
-        stats: (stats) => {
-            stats.ws.value += 20;
-            stats.bs.value += 20;
-            stats.wp.value += 20;
+        stats: (stats, revert = false) => {
+            stats.ws.value += 20 * (revert ? -1 : 1);
+            stats.bs.value += 20 * (revert ? -1 : 1);
+            stats.wp.value += 20 * (revert ? -1 : 1);
         }
     },
     {
@@ -194,9 +194,9 @@ const TRAITS = [
     {
         name: 'Fast',
         description: "The creature moves unexpectedly fast. It receives +1 Movement and +10 Agility.",
-        stats: (stats) => {
-            stats.m += 1;
-            stats.agi.value += 10;
+        stats: (stats, revert = false) => {
+            stats.m += 1 * (revert ? -1 : 1);
+            stats.agi.value += 10 * (revert ? -1 : 1);
         }
     },
     {
@@ -260,9 +260,9 @@ const TRAITS = [
     {
         name: 'Leader',
         description: "The creature is a practiced leader. It receives a bonus of +10 to Fellowship and Willpower. <b>Note:</b> this Trait cannot be taken by creatures with the <i>Bestial</i> Trait.",
-        stats: (stats) => {
-            stats.fel.value += 10;
-            stats.wp.value += 10;
+        stats: (stats, revert = false) => {
+            stats.fel.value += 10 * (revert ? -1 : 1);
+            stats.wp.value += 10 * (revert ? -1 : 1);
         }
     },
     {
@@ -363,10 +363,8 @@ const TRAITS = [
             "<li>It multiplies any Damage caused by the number of steps larger it is (so, 2 steps=×2, 3 steps=×3, and so on); this multiplication is calculated after all modifiers are applied.</li>" +
             "<li>All successful strikes against smaller targets activate the Deathblow rule, even if the target survives (see page 160 of WFRP).</li>" +
             "</ul>" +
-            "<br/><br/>" +
             "If smaller:" +
             "<ul><li>It gains a bonus of +10 to hit.</li></ul>" +
-            "<br/><br/>" +
             "<b>Defending Against Big Creatures</b><br/>" +
             "You suffer a penalty of -2 SL for each step larger your opponent is when using Melee to defend an Opposed Test. It is recommended to dodge a Giant swinging a tree, not parry it!" +
             "<br/><br/>" +
@@ -500,14 +498,57 @@ const TRAITS = [
     {
         name: 'Tough',
         description: "The creature is more resistant to damage than normal, and unlikely to back down. It receives +10 Toughness and Willpower.",
-        stats(stats) {
-            stats.t.value += 10;
-            stats.wp.value += 10;
+        stats: (stats, revert = false) => {
+            stats.t.value += 10 * (revert ? -1 : 1);
+            stats.wp.value += 10 * (revert ? -1 : 1);
         }
     },
     {
         name: 'Tracker',
         description: "Trackers are adept at following their prey, generally through scent or hearing. They add SL equal to their Initiative Bonus to all Track Tests.",
+    },
+    {
+        name: 'Undead',
+        description: "The Undead are neither living, nor dead, meaning they are not reliant on the usual prerequisites for life: air, food, water… This Trait most commonly come into use when spells, miracles, or other abilities affect Undead only.",
+    },
+    {
+        name: 'Unstable',
+        description: "The creature’s corpus is maintained by foul magics that are inherently unstable in the material realm. Whenever it ends a Round engaged with any opponents with higher Advantage, the creature is driven back, and the magics holding it together weaken. It loses as many Wounds as the difference between its Advantage, and the highest Advantage engaged with it. So, if the creature had 1 Advantage, and its opponent had 3, the creature would lose 2 Wounds. If the creature ever reach 0 Wounds, the magics holding it in place collapse, and it ‘dies’.",
+    },
+    {
+        name: 'Vampiric',
+        description: "The creature feeds on blood and draws great physical strength from this act. Whenever it performs a successful Bite attack against an appropriate opponent, it heals as many Wounds as its opponent loses. Drinking blood in this way is the <i>only</i> way it can heal.",
+    },
+    {
+        name: 'Venom',
+        has: ['value'],
+        description: "The creature’s attacks are poisoned or envenomed. When it causes Wounds, its opponent gains a <i>Poisoned</i> Condition. If no Difficulty is marked to resist the Venom, it is assumed to be Challenging. See page 169 of WFRP.",
+    },
+    {
+        name: 'Vomit',
+        description: "The creature can spew a stream of corrosive corruption, dowsing its opponents in foul, semi-digested filth. On its turn, by spending 3 Advantage, the creature can activate its Vomit as a Free Attack. The creature chooses 1 target it can see within Toughness Bonus yards and lets loose; all targets within two yards are also hit.<br/><br/>" +
+            "The creature performs an <b>Opposed Ballistic Skill/Dodge</b> Test against all affected targets (its single roll opposed by each individual target). The Test is typically <b>Easy (+40)</b> for the vomiting creature, due to the close range, and <b>Challenging (+0)</b> for opponents. All losing targets suffer a hit with a Weapon Damage of the creature’s Toughness Bonus +4 and receive a <i>Stunned</i> condition.<br/><br/>" +
+            "All Armour and Weapons carried by affected targets suffer 1 Damage as the acidic vomit corrodes it away",
+    },
+    {
+        name: 'Ward',
+        has: ['rating'],
+        description: "Perhaps because they are magical, wear a special talisman, or are just plain lucky, some blows just seem to miss. Roll 1d10 after any blow is received, if the creature rolls Rating or higher, the blow is ignored, even if it is a critical.",
+    },
+    {
+        name: 'Wallcrawler',
+        description: "The creature can effortlessly scale vertical surfaces and even traverse ceilings, ready to drop on unwary prey. It moves at full Movement across any appropriate surface and automatically passes all Climb tests.",
+    },
+    {
+        name: 'Weapon',
+        has: ['rating', 'value'],
+        description: "The creature carries a melee weapon, or uses teeth, claws, or similar in combat.<br/><br/>" +
+            "The weapon causes Damage equal to its Rating which <i>already includes the creature’s Strength Bonus</i>. Typically it will be 4 + its Strength Bonus (representing a Hand Weapon).",
+    },
+    {
+        name: 'Web',
+        has: ['rating'],
+        description: "The creature can create webbing to trap unwary foes. Whenever it successfully hits, opponents gain 1 <i>Entangled</i> status, with a Strength of the Rating given. See page 168 of WFRP.",
     },
 ];
 
