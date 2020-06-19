@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve",
+    "serve": "vue-cli-service serve --open",
     "build": "vue-cli-service build"
   },
   "dependencies": {
@@ -21,13 +21,11 @@
     "vuetify": "^2.2.34"
   },
   "devDependencies": {
-    "@mdi/font": "^5.3.45",
     "@vue/cli-plugin-router": "~4.4.0",
     "@vue/cli-service": "~4.4.0",
     "bp-vuejs-dropdown": "^2.1.1",
     "deepmerge": "^4.2.2",
     "fibers": "^5.0.0",
-    "material-design-icons-iconfont": "^5.0.1",
     "sass": "^1.26.8",
     "sass-loader": "^8.0.2",
     "vue-template-compiler": "^2.6.11"
