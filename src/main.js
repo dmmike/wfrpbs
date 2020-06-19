@@ -24,7 +24,6 @@ Vue.component('font-awesome-icon', FontAwesomeIcon);
 Vue.config.productionTip = false;
 
 Vue.use(Dropdown);
-Vue.use(VueInputAutowidth);
 Vue.use(VueLodash, {lodash: lodash});
 Vue.directive('v-click-outside', ClickOutside);
 Vue.config.productionTip = false
