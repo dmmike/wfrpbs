@@ -10,6 +10,15 @@ import lodash from 'lodash';
 import vuetify from '@/plugins/vuetify'
 import ClickOutside from "vuetify/lib/directives/click-outside";
 import VueInputAutowidth from 'vue-input-autowidth';
+import 'material-design-icons-iconfont/dist/material-design-icons.css'
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faUserSlash, faFeatherAlt } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+
+library.add(faFeatherAlt, faUserSlash);
+
+Vue.component('font-awesome-icon', FontAwesomeIcon);
+Vue.config.productionTip = false;
 
 Vue.use(Dropdown);
 Vue.use(VueInputAutowidth);

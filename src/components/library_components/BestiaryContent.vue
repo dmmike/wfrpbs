@@ -1,7 +1,7 @@
 <template>
     <div id="bestiary-content">
         <div id="list">
-            <input type="search" v-model="filter" style="width:100%;">
+            <input id="search-bar" type="search" v-model="filter" placeholder="Type to filter by name">
             <ul id="bestiary">
                 <li :class="index%2 === 0 ? 'odd-row' : 'even-row'" v-for="(combatant, index) in filteredBestiary" :key="index">
                     <v-tooltip open-delay="500" right>
@@ -9,9 +9,7 @@
                             <span class="combatant-line" style="width:100%" v-bind="attrs" v-on="on" @mouseenter="hover = index">
                                 {{combatant.name}}
                                 <span v-if="hover === index" class="combatant-options">
-                                    <span @click="edit(combatant.id)">
-                                        Edit
-                                    </span>
+                                    <font-awesome-icon icon="feather-alt" @click="edit(combatant.id)"/>
                                 </span>
                             </span>
                         </template>
@@ -32,7 +30,8 @@
         name: "BestiaryContent",
         components: {CombatantView},
         props: {
-            bestiary: Object
+            bestiary: Object,
+            npcs: Boolean,
         },
         data() {
             return {
@@ -42,8 +41,8 @@
         },
         computed: {
             filteredBestiary() {
-                return Object.values(this.bestiary).filter(c => this.filter === '' || c.name.includes(this.filter)).sort((a, b) => {
-                    return a.name.localeCompare(b.name);
+                return Object.values(this.bestiary).filter(c => this.filter === '' || c.name.toLowerCase().includes(this.filter.toLowerCase())).sort((a, b) => {
+                    return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
                 });
             }
         },
@@ -55,7 +54,7 @@
                 this.$root.$emit('edit-combatant', id);
             },
             newCharacter() {
-                this.$root.$emit('new-combatant', 'npc');
+                this.$root.$emit('new-combatant', this.npcs ? 'npc' : 'character');
             }
         }
     }
@@ -106,5 +105,12 @@
 
     .combatant-options {
         float:right;
+        margin-right: 10px
+    }
+
+    #search-bar {
+        width: 100%;
+        background-color: rgba(255, 255, 255, 0.8);
+        border: solid black 1px;
     }
 </style>

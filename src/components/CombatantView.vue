@@ -11,8 +11,7 @@
                 <th>W</th>
             </tr>
             <tr>
-                <td :class="{editable: edit}"><input :disabled="!edit" type="text" @keypress="isNumber($event)"
-                                                     v-model="st.m"></td>
+                <td :class="{editable: edit}"><input :disabled="!edit" type="text" @keypress="isNumber($event)" v-model="st.m"></td>
                 <td :class="{editable: edit}" v-for="stat in stats">
                     <input :disabled="!edit" type="text" @keypress="isNumber($event)"
                            v-model="st[stat.toLowerCase()].value">
@@ -82,11 +81,10 @@
                     <button type="button" v-bind="attrs" v-on="on" class="npc-button">+trait</button>
                 </template>
                 <template>
-                    <input type="search" v-model="traitFilter" class="trait-filter"
-                           placeholder="Type to filter by name and description">
+                    <input type="search" v-model="traitFilter" class="trait-filter" placeholder="Type to filter by name and description">
                     <ul style="" class="trait-list">
                         <li :id="'trait' + trait.name" v-for="trait in filteredTraits" :key="trait.name">
-                            <v-tooltip bottom open-delay="500" max-width="80%">
+                            <v-tooltip bottom open-delay="800" max-width="80%">
                                 <template v-slot:activator="{ on, attrs }">
                                     <span v-bind="attrs" v-on="on" @click="addTrait(trait)">{{trait.name}}</span>
                                 </template>

@@ -2,7 +2,12 @@
     <div id="character-editor">
         <h2>EDIT COMBATANT <img class="close-button" src="@/assets/close.png" @click="$emit('close')"></h2>
         <combatant-view v-if="characterData" :combatant="characterData" :edit="true"></combatant-view>
-        <button type="button" @click="save">Save character</button>
+        <div class="icon-btn">
+            <font-awesome-icon icon="feather-alt" @click="save"/> Save character
+        </div>
+        <div class="icon-btn">
+            <font-awesome-icon icon="user-slash" @click="destroy"/> Delete character
+        </div>
     </div>
 </template>
 
@@ -43,6 +48,10 @@
         methods: {
             save() {
                 this.$root.$emit('save-combatant', this.characterData);
+                this.$emit('close');
+            },
+            destroy() {
+                this.$root.$emit('destroy-npc', this.character.id);
                 this.$emit('close');
             }
         }

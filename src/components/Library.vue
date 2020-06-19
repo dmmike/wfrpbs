@@ -24,8 +24,8 @@
 
         <div id="library-content">
             <transition name="fade">
-                <bestiary-content :bestiary="library.bestiary" v-if="tab===0"></bestiary-content>
-                <characters-content :characters="library.characters" v-if="tab===1"></characters-content>
+                <bestiary-content :npcs="true" :bestiary="library.bestiary" v-if="tab===0"></bestiary-content>
+                <bestiary-content :npcs="false" :bestiary="library.characters" v-if="tab===1"></bestiary-content>
                 <encounters-content :encounters="library.encounters" v-if="tab===2"></encounters-content>
             </transition>
         </div>
