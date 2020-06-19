@@ -12,10 +12,15 @@ import ClickOutside from "vuetify/lib/directives/click-outside";
 import VueInputAutowidth from 'vue-input-autowidth';
 import 'material-design-icons-iconfont/dist/material-design-icons.css'
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faUserSlash, faFeatherAlt } from '@fortawesome/free-solid-svg-icons'
+import {faUserSlash, faFeatherAlt, faCopy} from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import {Combatant, Character, NPC} from "@/classes/Combatant";
 
-library.add(faFeatherAlt, faUserSlash);
+library.add(faFeatherAlt, faUserSlash, faCopy);
+
+Vue.prototype.$Combatant = Combatant;
+Vue.prototype.$Character = Character;
+Vue.prototype.$NPC = NPC;
 
 Vue.component('font-awesome-icon', FontAwesomeIcon);
 Vue.config.productionTip = false;

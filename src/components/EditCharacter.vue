@@ -1,57 +1,64 @@
 <template>
     <div id="character-editor">
-        <h2>EDIT COMBATANT <img class="close-button" src="@/assets/close.png" @click="$emit('close')"></h2>
+        <h2>{{create? 'CREATE' : 'EDIT'}} COMBATANT <img class="close-button" src="@/assets/close.png" @click="$emit('close')"></h2>
         <combatant-view v-if="characterData" :combatant="characterData" :edit="true"></combatant-view>
-        <div class="icon-btn">
-            <font-awesome-icon icon="feather-alt" @click="save"/> Save character
+        <div class="icon-btn" @click="save">
+            <font-awesome-icon icon="feather-alt"/> Save character
         </div>
-        <div class="icon-btn">
-            <font-awesome-icon icon="user-slash" @click="destroy"/> Delete character
+        <div class="icon-btn" @click="destroy">
+            <font-awesome-icon icon="user-slash"/> Delete character
         </div>
     </div>
 </template>
 
 <script>
-    import {NPC} from "@/classes/Combatant";
     import CombatantView from "@/components/CombatantView";
+    import {Character, NPC} from "@/classes/Combatant";
 
     export default {
         name: "EditCharacter",
         components: {CombatantView},
         props: {
-            character: [Object, null],
+            combatant: [Character, NPC],
             type: String
         },
         data() {
             return {
                 create: false,
                 creatureType: this.type,
-                characterData: _.clone(this.character),
+                characterData: _.clone(this.combatant),
             }
         },
         computed: {
             hasChanges() {
                 return this.characterData.name.length > 0 && (
-                    this.create || JSON.stringify(this.characterData) !== JSON.stringify(this.character)
+                    this.create || JSON.stringify(this.characterData) !== JSON.stringify(this.combatant)
                 );
             }
         },
         mounted() {
-            if (this.character === null) {
+            if (this.type !== undefined) {
                 this.create = true;
+            }
 
+            if (this.combatant === null) {
+                this.create = true;
                 if (this.type === 'npc') {
-                    this.characterData = new NPC();
+                    this.characterData = new this.$NPC();
+                }
+                else {
+                    this.characterData = new this.$Character();
                 }
             }
         },
         methods: {
             save() {
+                console.log(this.characterData);
                 this.$root.$emit('save-combatant', this.characterData);
                 this.$emit('close');
             },
             destroy() {
-                this.$root.$emit('destroy-npc', this.character.id);
+                this.$root.$emit('destroy-npc', this.combatant.id);
                 this.$emit('close');
             }
         }

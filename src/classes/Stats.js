@@ -65,21 +65,21 @@ export default class Stats {
 
     static revive(data) {
         return new Stats(
-            data.m.value,
-            data.ws.value,
-            data.bs.value,
-            data.s.value,
-            data.t.value,
-            data.i.value,
-            data.agi.value,
-            data.dex.value,
-            data.int.value,
-            data.wp.value,
-            data.fel.value,
-            data.fate,
-            data.maxFortune,
-            data.resilience,
-            data.maxResolve
+            Number.parseInt(data.m),
+            Number.parseInt(data.ws.value),
+            Number.parseInt(data.bs.value),
+            Number.parseInt(data.s.value),
+            Number.parseInt(data.t.value),
+            Number.parseInt(data.i.value),
+            Number.parseInt(data.agi.value),
+            Number.parseInt(data.dex.value),
+            Number.parseInt(data.int.value),
+            Number.parseInt(data.wp.value),
+            Number.parseInt(data.fel.value),
+            Number.parseInt(data.fate),
+            Number.parseInt(data.maxFortune),
+            Number.parseInt(data.resilience),
+            Number.parseInt(data.maxResolve)
         )
     }
 }

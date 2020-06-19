@@ -23,11 +23,9 @@
         </div>
 
         <div id="library-content">
-            <transition name="fade">
-                <bestiary-content :npcs="true" :bestiary="library.bestiary" v-if="tab===0"></bestiary-content>
-                <bestiary-content :npcs="false" :bestiary="library.characters" v-if="tab===1"></bestiary-content>
-                <encounters-content :encounters="library.encounters" v-if="tab===2"></encounters-content>
-            </transition>
+            <bestiary-content :npcs="true" :bestiary="library.bestiary" v-if="tab===0"></bestiary-content>
+            <bestiary-content :npcs="false" :bestiary="library.characters" v-if="tab===1"></bestiary-content>
+            <encounters-content :encounters="library.encounters" v-if="tab===2"></encounters-content>
         </div>
     </div>
 </template>
@@ -114,5 +112,13 @@
         100% {
             transform: scaleY(1);
         }
+    }
+
+    .fade-enter-active, .fade-leave-active {
+        transition: opacity .5s;
+    }
+
+    .fade-enter, .fade-leave-to {
+        opacity: 0;
     }
 </style>

@@ -11,10 +11,10 @@
                 <th>W</th>
             </tr>
             <tr>
-                <td :class="{editable: edit}"><input :disabled="!edit" type="text" @keypress="isNumber($event)" v-model="st.m"></td>
+                <td :class="{editable: edit}"><input :disabled="!edit" type="text" @keypress="isNumber($event)" v-model.number="st.m"></td>
                 <td :class="{editable: edit}" v-for="stat in stats">
                     <input :disabled="!edit" type="text" @keypress="isNumber($event)"
-                           v-model="st[stat.toLowerCase()].value">
+                           v-model.number="st[stat.toLowerCase()].value">
                 </td>
                 <td>{{st.w}}</td>
             </tr>
@@ -30,7 +30,7 @@
                                 <span>{{skill.name}}</span>
                                 <span>&nbsp;(<input class="inline-input" :disabled="!edit" type="text"
                                                     @click="skillClicked(skill.name, $event)"
-                                                    @keypress="isNumber($event)" v-model="skill.skill">)</span>
+                                                    @keypress="isNumber($event)" v-model.number="skill.skill">)</span>
                                 <span v-if="skills[index +1]">, </span>
                             </span>
                         </template>
@@ -100,7 +100,6 @@
 </template>
 
 <script>
-    import {Character, Combatant} from "@/classes/Combatant";
     import Dropdown from 'bp-vuejs-dropdown';
     import TraitsAndTalents from "@/classes/TraitsAndTalents";
     import TraitDisplay from "@/components/TraitDisplay";
@@ -112,7 +111,7 @@
             Dropdown,
         },
         props: {
-            combatant: Combatant,
+            combatant: Object,
             edit: {
                 type: Boolean,
                 default: false
@@ -133,13 +132,11 @@
                 return this.combatant.stats;
             },
             skills() {
-                if (this.isCharacter) return [];
                 return _.clone(this.combatant.skills).sort((a, b) => {
                     return a.name.localeCompare(b.name);
                 });
             },
             traits() {
-                if (this.isCharacter) return [];
                 let traitsByName = {};
                 _.clone(this.combatant.traits).forEach(trait => {
                     if (!traitsByName[trait.name]) {
@@ -153,11 +150,13 @@
                 return Object.values(traitsByName).sort((a, b) => a.name.localeCompare(b.name));
             },
             talents() {
-                if (this.isCharacter) return [];
                 return _.clone(this.combatant.talents).sort();
             },
             isCharacter() {
-                return this.combatant instanceof Character;
+                console.log('kom ook nier nog');
+                console.log(this.$Character, this.$NPC, this.$Combatant);
+                console.log('dit gaat ook nog goed');
+                return this.combatant instanceof this.$Character;
             },
             filteredTraits() {
                 return _.clone(this.traitOptions).filter(trait => {

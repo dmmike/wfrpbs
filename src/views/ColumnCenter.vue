@@ -1,7 +1,7 @@
 <template>
     <div id="column-center">
         <edit-character v-if="showCharacterEditor"
-                        :character="character"
+                        :combatant="combatant"
                         :type="createType"
                         @close="showCharacterEditor = false"
         ></edit-character>
@@ -30,7 +30,6 @@
     import Roller from "@/classes/Roller";
     import CombatRow from "@/components/CombatRow";
     import EditCharacter from "@/components/EditCharacter";
-    import {NPC, Character} from "@/classes/Combatant";
 
     export default {
         name: "ColumnCenter",
@@ -57,7 +56,7 @@
             return {
                 orderedCombatants: this.combatants,
                 combatStarted: false,
-                character: null,
+                combatant: {},
                 showCharacterEditor: false,
                 createType: 'npc',
             }
@@ -132,24 +131,29 @@
             },
             newCharacter(type) {
                 //TODO: Implement warning when character already selected
-                this.character = null;
+                this.combatant = null;
                 this.createType = type;
                 this.showCharacterEditor = true;
             },
             saveCombatant(combatant) {
-                this.character = null;
+                this.combatant = null;
                 this.showCharacterEditor = false;
                 this.$emit('save-combatant', combatant);
             },
-            edit(id) {
+            edit(combatant) {
                 let library = JSON.parse(localStorage.getItem('library'));
-                if (library.bestiary[id] !== undefined) {
-                    this.character = NPC.revive(library.bestiary[id]);
-                }
-                else {
-                    this.character = Character.revive(library.characters[id])
-                }
+                this.combatant = _.clone(combatant);
                 this.createType = null;
+
+                if (combatant instanceof this.$NPC) {
+                    if (library.bestiary[combatant.id] === undefined) {
+                        this.createType = 'npc';
+                    }
+                }
+                else if (library.characters[combatant.id] === undefined) {
+                    this.createType = 'character';
+                }
+
                 this.showCharacterEditor = true;
             }
         }

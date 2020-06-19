@@ -36,6 +36,7 @@
         },
         mounted() {
             this.loadData();
+            this.libraryOpen = true;
 
             this.$root.$on('save-combatant', this.saveCombatant);
             this.$root.$on('destroy-npc', this.destroyNPC);
@@ -56,6 +57,11 @@
                 Object.keys(data.bestiary).forEach(id => {
                     let npc = NPC.revive(data.bestiary[id]);
                     this.$set(library.bestiary, npc.id, npc);
+                })
+
+                Object.keys(data.characters).forEach(id => {
+                    let character = Character.revive(data.characters[id]);
+                    this.$set(library.characters, character.id, character);
                 })
 
                 this.library = library;

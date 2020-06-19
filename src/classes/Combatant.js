@@ -100,17 +100,38 @@ export class Combatant {
                 return this.initiativeBonus + this.stats.i.value + this.stats.agi.value/100;
         }
     }
+
+    copy() {
+        let n = _.clone(this);
+
+        n.name = 'Copy of ' + n.name;
+        n.id = getId();
+        return n;
+    }
 }
 
 export class Character extends Combatant {
     constructor(
         name = 'New character',
         stats = new Stats(),
-        armour = {},
-        initiativeBonus = 0
+        traits = [],
+        talents = [],
+        skills = [],
     ) {
-        super(name, stats, initiativeBonus);
-        this.armour = armour;
+        super(name, stats, traits, talents, skills);
+    }
+
+    static revive(data) {
+        let character = new Character(
+            data.name,
+            Stats.revive(data.stats),
+            data.traits,
+            data.talents,
+            data.skills,
+        );
+
+        character.id = data.id;
+        return character;
     }
 }
 
@@ -118,9 +139,9 @@ export class NPC extends Combatant {
     constructor(
         name = 'New creature',
         stats = new Stats(),
-        skills = [],
         traits = [],
         talents = [],
+        skills = [],
         is_unique = false
     ) {
         super(name, stats, traits, talents, skills);
@@ -140,9 +161,9 @@ export class NPC extends Combatant {
         let npc = new NPC(
             data.name,
             Stats.revive(data.stats),
-            data.skills,
             data.traits,
             data.talents,
+            data.skills,
             data.is_unique
         );
 

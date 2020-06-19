@@ -9,7 +9,8 @@
                             <span class="combatant-line" style="width:100%" v-bind="attrs" v-on="on" @mouseenter="hover = index">
                                 {{combatant.name}}
                                 <span v-if="hover === index" class="combatant-options">
-                                    <font-awesome-icon icon="feather-alt" @click="edit(combatant.id)"/>
+                                    <font-awesome-icon icon="copy" @click="edit(combatant.copy())"/>
+                                    <font-awesome-icon icon="feather-alt" @click="edit(combatant)"/>
                                 </span>
                             </span>
                         </template>
@@ -50,8 +51,8 @@
             isOddRow(id) {
                 return Object.keys(this.filteredBestiary).findIndex(key => key === id )%2;
             },
-            edit(id) {
-                this.$root.$emit('edit-combatant', id);
+            edit(combatant) {
+                this.$root.$emit('edit-combatant', combatant);
             },
             newCharacter() {
                 this.$root.$emit('new-combatant', this.npcs ? 'npc' : 'character');
@@ -106,6 +107,10 @@
     .combatant-options {
         float:right;
         margin-right: 10px
+    }
+
+    .combatant-options * {
+        margin-left: 10px;
     }
 
     #search-bar {
