@@ -9,8 +9,6 @@ import Dropdown from 'bp-vuejs-dropdown';
 import lodash from 'lodash';
 import vuetify from '@/plugins/vuetify'
 import ClickOutside from "vuetify/lib/directives/click-outside";
-import VueInputAutowidth from 'vue-input-autowidth';
-import 'material-design-icons-iconfont/dist/material-design-icons.css'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {faUserSlash, faFeatherAlt, faCopy} from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
