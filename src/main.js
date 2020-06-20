@@ -10,11 +10,11 @@ import lodash from 'lodash';
 import vuetify from '@/plugins/vuetify'
 import ClickOutside from "vuetify/lib/directives/click-outside";
 import { library } from '@fortawesome/fontawesome-svg-core'
-import {faUserSlash, faFeatherAlt, faCopy} from '@fortawesome/free-solid-svg-icons'
+import {faUserSlash, faFeatherAlt, faCopy, faHeart, faBalanceScale, faBolt} from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import {Combatant, Character, NPC} from "@/classes/Combatant";
 
-library.add(faFeatherAlt, faUserSlash, faCopy);
+library.add(faFeatherAlt, faUserSlash, faCopy, faHeart, faBalanceScale, faBolt);
 
 Vue.prototype.$Combatant = Combatant;
 Vue.prototype.$Character = Character;

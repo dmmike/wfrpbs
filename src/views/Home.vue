@@ -14,8 +14,6 @@
     import ColumnLeft from '@/views/ColumnLeft';
     import ColumnRight from "@/views/ColumnRight";
     import MenuBar from "@/views/MenuBar";
-    import {Character, NPC} from "@/classes/Combatant";
-    import Stats from "@/classes/Stats";
 
     export default {
         name: 'Home',
@@ -28,7 +26,6 @@
         data() {
             return {
                 selectedCombatant: null,
-                // libraryOpen: true,
                 libraryOpen: false,
                 combatHasStarted: false,
                 library: null,
@@ -36,7 +33,6 @@
         },
         mounted() {
             this.loadData();
-            this.libraryOpen = true;
 
             this.$root.$on('save-combatant', this.saveCombatant);
             this.$root.$on('destroy-npc', this.destroyNPC);
@@ -56,12 +52,12 @@
 
                 if (data) {
                     Object.keys(data.bestiary).forEach(id => {
-                        let npc = NPC.revive(data.bestiary[id]);
+                        let npc = this.$NPC.revive(data.bestiary[id]);
                         this.$set(library.bestiary, npc.id, npc);
                     })
 
                     Object.keys(data.characters).forEach(id => {
-                        let character = Character.revive(data.characters[id]);
+                        let character = this.$Character.revive(data.characters[id]);
                         this.$set(library.characters, character.id, character);
                     })
                 }
@@ -69,7 +65,7 @@
                 this.library = library;
             },
             saveCombatant(data) {
-                if (data instanceof NPC) {
+                if (data instanceof this.$NPC) {
                     this.$set(this.library.bestiary, data.id, data);
                 }
                 else {
@@ -94,6 +90,19 @@
 </script>
 
 <style>
+    .odd-row {
+        background-color: rgba(188, 202, 199, 0.8);
+    }
+
+
+    .even-row {
+        background-color: rgba(255, 255, 255, 0.8);
+    }
+
+    .center {
+        text-align: center;
+    }
+
     .close-button {
         display: block;
         position: absolute;

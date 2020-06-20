@@ -153,9 +153,6 @@
                 return _.clone(this.combatant.talents).sort();
             },
             isCharacter() {
-                console.log('kom ook nier nog');
-                console.log(this.$Character, this.$NPC, this.$Combatant);
-                console.log('dit gaat ook nog goed');
                 return this.combatant instanceof this.$Character;
             },
             filteredTraits() {

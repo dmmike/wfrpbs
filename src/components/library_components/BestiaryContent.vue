@@ -7,7 +7,7 @@
                     <v-tooltip open-delay="500" right>
                         <template v-slot:activator="{ on, attrs }">
                             <span class="combatant-line" style="width:100%" v-bind="attrs" v-on="on" @mouseenter="hover = index">
-                                {{combatant.name}}
+                                <span @click="addToCombat(combatant)">{{combatant.name}}</span>
                                 <span v-if="hover === index" class="combatant-options">
                                     <font-awesome-icon icon="copy" @click="edit(combatant.copy())"/>
                                     <font-awesome-icon icon="feather-alt" @click="edit(combatant)"/>
@@ -56,7 +56,10 @@
             },
             newCharacter() {
                 this.$root.$emit('new-combatant', this.npcs ? 'npc' : 'character');
-            }
+            },
+            addToCombat(combatant) {
+                this.$root.$emit('add-to-combat', combatant);
+            },
         }
     }
 </script>
@@ -81,15 +84,6 @@
         list-style-type: none;
         display: flex;
         overflow-x: hidden;
-    }
-
-    .odd-row {
-        background-color: rgba(188, 202, 199, 0.8);
-    }
-
-
-    .even-row {
-        background-color: rgba(255, 255, 255, 0.8);
     }
 
     #list {

@@ -10,16 +10,25 @@
             <table id="combat-table">
                 <thead id="combat-table-header">
                 <tr>
-                    <th>Initiative</th>
-                    <th>Combatant</th>
-                    <th>Wounds</th>
-                    <th>Advantage</th>
-                    <th>Conditions/Effects</th>
+                    <th class="center" width="50px"><font-awesome-icon icon="bolt"/></th>
+                    <th width="30%">Combatant</th>
+                    <th class="center" width="80px"><font-awesome-icon icon="heart"/></th>
+                    <th class="center" width="80px"><font-awesome-icon icon="balance-scale"/></th>
+                    <th width="auto">Conditions/Effects</th>
                 </tr>
                 </thead>
                 <tbody id="combat-table-body">
-                <combat-row v-for="(combatantsWithInitiative, index) in orderedCombatants"
-                            :initiative-type="initiativeType" :key="index"></combat-row>
+                    <tr v-if="combatLines.length === 0">
+                        <td colspan="5">
+                            No combatants added yet
+                        </td>
+                    </tr>
+                    <combat-row v-for="(combatantWithInitiative, index) in combatLines"
+                                :class="{'odd-row' : index%2 === 1}"
+                                :combatant="combatantWithInitiative"
+                                :show-no="combatantsWithNumbers.includes(combatantWithInitiative.id)"
+                                @remove="removeCombatant(combatantWithInitiative)"
+                                :initiative-type="initiativeType" :key="index"></combat-row>
                 </tbody>
             </table>
         </div>
@@ -45,25 +54,38 @@
             initiativeType: {
                 type: String
             },
-            combatants: {
-                type: Array,
-                default: () => {
-                    return [];
-                }
-            },
         },
         data() {
             return {
-                orderedCombatants: this.combatants,
+                orderedCombatants: [],
                 combatStarted: false,
+                combatants: [],
                 combatant: {},
                 showCharacterEditor: false,
                 createType: 'npc',
             }
         },
+        computed: {
+            combatLines() {
+                return this.orderedCombatants.length ? this.orderedCombatants : this.combatants;
+            },
+            combatantsWithNumbers() {
+                let idsFound = [];
+                let ids = [];
+                this.combatants.forEach(combatant => {
+                    if (idsFound.includes(combatant.id) && !ids.includes(combatant.id)) {
+                        ids.push(combatant.id);
+                    } else {
+                        idsFound.push(combatant.id);
+                    }
+                })
+                return ids;
+            }
+        },
         mounted() {
             this.$root.$on('edit-combatant', this.edit);
             this.$root.$on('new-combatant', this.newCharacter);
+            this.$root.$on('add-to-combat', this.addToCombat)
         },
         methods: {
             determineInitiative() {
@@ -79,7 +101,7 @@
                             initiative = -0.001
                         }
                     }
-                    combatant.initiative = initiative
+                    combatant.initiative = initiative;
                     if (!combatantsByInitiative[initiative]) {
                         this.$set(combatantsByInitiative, initiative, []);
                     }
@@ -155,13 +177,37 @@
                 }
 
                 this.showCharacterEditor = true;
+            },
+            addToCombat(combatant) {
+                if (combatant.is_unique === false) {
+                    let clone = _.clone(combatant);
+                    let highestNo = 0;
+                    this.combatants.forEach(c => {
+                        if (c.id === combatant.id && c.no > highestNo) {
+                            highestNo = c.no;
+                        }
+                    })
+                    this.$set(clone, 'no', highestNo + 1);
+                    this.$set(clone, 'currentWounds', clone.stats.w);
+                    this.$set(clone, 'initiative', clone.getInitiative());
+                    this.combatants.push(clone);
+                }
+                else if (this.combatants.findIndex(com => com.id === combatant.id) === -1) {
+                    this.$set(combatant, 'initiative', combatant.getInitiative());
+                    this.combatants.push(combatant);
+                }
+            },
+            removeCombatant(combatant) {
+                let no = combatant.no;
+                this.combatants.splice(this.combatants.findIndex(c => {
+                    return c.id === combatant.id && c.no === no;
+                }), 1);
             }
         }
     }
 </script>
 
-<style scoped>
-
+<style>
     #column-center {
         padding-top: 3vh
     }
@@ -169,6 +215,24 @@
     #combat-table {
         width: 100%;
         margin: 0;
+        border-collapse: collapse;
+        border-style: hidden;
+    }
+
+    #combat-table thead {
+        background-color: rgba(163, 179, 175, 0.8);
+        border-bottom: solid 3px black;
+    }
+
+    #combat-table th, #combat-table tbody td {
+        padding: 0 5px;
+        border: 1px solid black;
+    }
+
+    #combat-table tr {
+        line-height: 1.7em;
+        min-height: 1.7em;
+        overflow-x: hidden;
     }
 
 </style>

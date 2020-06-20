@@ -53,7 +53,6 @@
         },
         methods: {
             save() {
-                console.log(this.characterData);
                 this.$root.$emit('save-combatant', this.characterData);
                 this.$emit('close');
             },
