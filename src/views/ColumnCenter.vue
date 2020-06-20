@@ -225,11 +225,13 @@
             },
             loadData() {
                 let data = JSON.parse(localStorage.getItem('combatants'));
-                data.forEach(rawCombatant => {
-                    let revived = this.$Combatant.revive(rawCombatant);
-                    if (rawCombatant.no) revived.no = rawCombatant.no;
-                    this.combatants.push(revived);
-                });
+                if (data) {
+                    data.forEach(rawCombatant => {
+                        let revived = this.$Combatant.revive(rawCombatant);
+                        if (rawCombatant.no) revived.no = rawCombatant.no;
+                        this.combatants.push(revived);
+                    });
+                }
             },
         }
     }

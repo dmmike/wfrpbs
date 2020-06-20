@@ -1,3 +1,6 @@
+##[0.2.1]
+- Fix: Check for data on load in center column
+
 ##[0.2.0]
 - When editing an NPC, you can check whether it's a unique NPC or not
 - Add combatants to running combat
