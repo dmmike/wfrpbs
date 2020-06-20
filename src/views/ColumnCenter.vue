@@ -215,7 +215,6 @@
                 }
             },
             removeCombatant(combatant) {
-                console.log(combatant);
                 let no = combatant.no;
                 this.combatants.splice(this.combatants.findIndex(c => {
                     return c.id === combatant.id && c.no === no;
