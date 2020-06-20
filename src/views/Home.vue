@@ -36,7 +36,6 @@
 
             this.$root.$on('save-combatant', this.saveCombatant);
             this.$root.$on('destroy-npc', this.destroyNPC);
-            this.$root.$on('edit-combatant', this.edit);
         },
         methods: {
             newCharacter(type = 'npc') {
@@ -48,7 +47,7 @@
                     bestiary: {},
                     characters: {},
                     encounters: {},
-                }
+                };
 
                 if (data) {
                     Object.keys(data.bestiary).forEach(id => {
@@ -72,11 +71,6 @@
                     this.$set(this.library.characters, data.id, data);
                 }
                 this.save();
-            },
-            edit(id) {
-                this.$refs.columnCenter.character = this.library.bestiary[id] ? this.library.bestiary[id] : this.library.characters[id];
-                this.$refs.columnCenter.createType = null;
-                this.$refs.columnCenter.showCharacterEditor = true;
             },
             destroyNPC(id) {
                 this.$delete(this.library.bestiary, id);

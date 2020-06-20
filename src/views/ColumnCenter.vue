@@ -10,7 +10,7 @@
             <table id="combat-table">
                 <thead id="combat-table-header">
                 <tr>
-                    <th class="center" width="50px"><font-awesome-icon icon="bolt"/></th>
+                    <th class="center" width="50px"><font-awesome-icon :icon="initiativeIcon"/></th>
                     <th width="30%">Combatant</th>
                     <th class="center" width="80px"><font-awesome-icon icon="heart"/></th>
                     <th class="center" width="80px"><font-awesome-icon icon="balance-scale"/></th>
@@ -27,6 +27,7 @@
                                 :class="{'odd-row' : index%2 === 1}"
                                 :combatant="combatantWithInitiative"
                                 :show-no="combatantsWithNumbers.includes(combatantWithInitiative.id)"
+                                :combat-started="combatStarted"
                                 @remove="removeCombatant(combatantWithInitiative)"
                                 :initiative-type="initiativeType" :key="index"></combat-row>
                 </tbody>
@@ -80,7 +81,10 @@
                     }
                 })
                 return ids;
-            }
+            },
+            initiativeIcon() {
+                return this.combatStarted ? 'bolt' : 'bed';
+            },
         },
         mounted() {
             this.$root.$on('edit-combatant', this.edit);

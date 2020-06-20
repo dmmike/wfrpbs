@@ -17,12 +17,14 @@
             initiativeType: String,
             useMaxAdvantage: Boolean,
             showNo: Boolean,
+            combatStarted: Boolean,
         },
         computed: {
             formattedInitiative() {
+                if (!this.combatStarted) return '-';
                 switch (this.initiativeType) {
                     default:
-                        return Math.floor(this.combatant.initiative.valueOf());
+                        return Math.floor(this.combatant.initiative);
                 }
             },
         },
