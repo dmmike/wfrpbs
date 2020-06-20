@@ -25,8 +25,8 @@
             <strong>Skills: </strong>
             <span :class="{editable: edit}" v-for="(skill, index) in skills" @click="skillClicked(skill.name, $event)">
                     <v-tooltip bottom open-delay="1000" max-width="800px">
-                        <template v-slot:activator="{ on, attrs }">
-                            <span v-on="on" v-bind="attrs">
+                        <template v-slot:activator="{ onView, attrsView }">
+                            <span v-on="onView" v-bind="attrsView">
                                 <span>{{skill.name}}</span>
                                 <span>&nbsp;(<input class="inline-input" :disabled="!edit" type="text"
                                                     @click="skillClicked(skill.name, $event)"
@@ -57,38 +57,38 @@
                            @removeAll="removeAll"/>
         </div>
 
-        <label v-if="edit && isNPC">Unique NPC: <input type="checkbox" v-model="combatant.is_unique"></label>
-        <div id="edit-buttons" v-if="edit" style="display:flex">
-            <v-menu offset-y offset-overflow :close-on-content-click="false" attach="#edit-buttons"
-                    content-class="drop-menu">
-                <template v-slot:activator="{on, attrs}">
-                    <button type="button" v-bind="attrs" v-on="on" class="npc-button">+skill</button>
-                </template>
-                <template>
-                    <label><strong>Name:</strong><input type="text" v-model="skillName"></label>
-                    <label><strong>Score:</strong><input type="text" @keypress="isNumber($event)" v-model="skillScore"></label>
-                    <button style="width:100%" @click="addSkill" :disabled="invalidSkill">Save</button>
-                </template>
-            </v-menu>
-            <v-menu offset-y offset-overflow nudge-left="270%" :close-on-content-click="false" content-class="drop-menu">
-                <template v-slot:activator="{on, attrs}">
-                    <button type="button" v-bind="attrs" v-on="on" class="npc-button">+trait</button>
-                </template>
-                <template>
-                    <input type="search" v-model="traitFilter" class="trait-filter" placeholder="Type to filter by name and description">
-                    <ul style="" class="trait-list">
-                        <li :id="'trait' + trait.name" v-for="trait in filteredTraits" :key="trait.name">
-                            <v-tooltip bottom open-delay="800" max-width="80%">
-                                <template v-slot:activator="{ on, attrs }">
-                                    <span v-bind="attrs" v-on="on" @click="addTrait(trait)">{{trait.name}}</span>
-                                </template>
-                                <span v-html="trait.description"></span>
-                            </v-tooltip>
-                        </li>
-                    </ul>
-                </template>
-            </v-menu>
-        </div>
+<!--        <label v-if="edit && isNPC">Unique NPC: <input type="checkbox" v-model="combatant.is_unique"></label>-->
+<!--        <div id="edit-buttons" v-if="edit">-->
+<!--            <v-menu offset-y offset-overflow :close-on-content-click="false" attach="#edit-buttons"-->
+<!--                    content-class="drop-menu">-->
+<!--                <template v-slot:activator="{on, attrs}">-->
+<!--                    <button type="button" v-bind="attrs" v-on="on" class="npc-button">+skill</button>-->
+<!--                </template>-->
+<!--                <template>-->
+<!--                    <label><strong>Name:</strong><input type="text" v-model="skillName"></label>-->
+<!--                    <label><strong>Score:</strong><input type="text" @keypress="isNumber($event)" v-model="skillScore"></label>-->
+<!--                    <button style="width:100%" @click="addSkill" :disabled="invalidSkill">Save</button>-->
+<!--                </template>-->
+<!--            </v-menu>-->
+<!--            <v-menu offset-y offset-overflow nudge-left="270%" :close-on-content-click="false" content-class="drop-menu">-->
+<!--                <template v-slot:activator="{on, attrs}">-->
+<!--                    <button type="button" v-bind="attrs" v-on="on" class="npc-button">+trait</button>-->
+<!--                </template>-->
+<!--                <template>-->
+<!--                    <input type="search" v-model="traitFilter" class="trait-filter" placeholder="Type to filter by name and description">-->
+<!--                    <ul style="" class="trait-list">-->
+<!--                        <li :id="'trait' + trait.name" v-for="trait in filteredTraits" :key="trait.name">-->
+<!--                            <v-tooltip bottom open-delay="800" max-width="80%">-->
+<!--                                <template v-slot:activator="{ on, attrs }">-->
+<!--                                    <span v-bind="attrs" v-on="on" @click="addTrait(trait)">{{trait.name}}</span>-->
+<!--                                </template>-->
+<!--                                <span v-html="trait.description"></span>-->
+<!--                            </v-tooltip>-->
+<!--                        </li>-->
+<!--                    </ul>-->
+<!--                </template>-->
+<!--            </v-menu>-->
+<!--        </div>-->
     </div>
 </template>
 
@@ -125,13 +125,13 @@
                 return this.combatant.stats;
             },
             skills() {
-                return _.clone(this.combatant.skills).sort((a, b) => {
+                return _.cloneDeep(this.combatant.skills).sort((a, b) => {
                     return a.name.localeCompare(b.name);
                 });
             },
             traits() {
                 let traitsByName = {};
-                _.clone(this.combatant.traits).forEach(trait => {
+                _.cloneDeep(this.combatant.traits).forEach(trait => {
                     if (!traitsByName[trait.name]) {
                         trait.count = 1;
                         traitsByName[trait.name] = trait;
@@ -143,13 +143,13 @@
                 return Object.values(traitsByName).sort((a, b) => a.name.localeCompare(b.name));
             },
             talents() {
-                return _.clone(this.combatant.talents).sort();
+                return _.cloneDeep(this.combatant.talents).sort();
             },
             isNPC() {
                 return this.combatant instanceof this.$NPC;
             },
             filteredTraits() {
-                return _.clone(this.traitOptions).filter(trait => {
+                return _.cloneDeep(this.traitOptions).filter(trait => {
                     let filter = this.traitFilter === '' || (trait.name.toLowerCase().includes(this.traitFilter.toLowerCase()) || trait.description.toLowerCase().includes(this.traitFilter.toLowerCase())),
                         available = trait.multi === true || !this.traits.some(tr => tr.name === trait.name);
                     return filter && available;
@@ -290,6 +290,9 @@
         text-align: center;
     }
 
+    #edit-buttons {
+        display:flex;
+    }
 </style>
 
 <style>

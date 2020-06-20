@@ -33,7 +33,6 @@
                                 @remove="removeCombatant(combatantData)"></combat-row>
                 </tbody>
             </table>
-            {{selectedCombatant}}
         </div>
     </div>
 </template>
@@ -174,7 +173,7 @@
             },
             edit(combatant) {
                 let library = JSON.parse(localStorage.getItem('library'));
-                this.combatant = _.clone(combatant);
+                this.combatant = _.cloneDeep(combatant);
                 this.createType = null;
 
                 if (combatant instanceof this.$NPC) {
@@ -190,7 +189,7 @@
             },
             addToCombat(combatant) {
                 if (combatant.is_unique === false) {
-                    let clone = _.clone(combatant);
+                    let clone = _.cloneDeep(combatant);
                     let highestNo = 0;
                     this.combatants.forEach(c => {
                         if (c.id === combatant.id && c.no > highestNo) {

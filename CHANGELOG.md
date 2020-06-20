@@ -3,6 +3,7 @@
 - Add combatants to running combat
 - Remove combatants from running combat
 - Select combatant that is in combat to view data on right column
+- Fix: object clones replaced with object deep clones to prevent render loops
 
 ##[0.1.2]
 - Reduced size of images for quicker loading

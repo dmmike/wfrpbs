@@ -1,8 +1,8 @@
 <template>
     <span>
         <v-tooltip bottom open-delay="500" max-width="800px">
-            <template :id="traitData.name" v-slot:activator="{ on, attrs }">
-                <span :class="{editable: edit}" v-on="on" v-bind="attrs" @click="traitClicked">
+            <template :id="traitData.name" v-slot:activator="{ onTraitDisplay, attrsTraitDisplay }">
+                <span :class="{editable: edit}" v-on="onTraitDisplay" v-bind="attrsTraitDisplay" @click="traitClicked">
                     <span v-if="traitData.count > 1">{{traitData.count}}×</span>
                     <span>{{traitData.name}}</span>
                     <span v-if="traitData.value"> ({{traitData.value}})</span>
@@ -35,10 +35,10 @@
                                 <option :value="undefined">
                                 </option>
                                 <v-tooltip right v-for="option in raw.values" :key="typeof option === 'string' ? option : option.value">
-                                    <template v-slot:activator="{ on, attrs }">
+                                    <template v-slot:activator="{ onTraitModal, attrsTraitModal }">
                                         <option :value="typeof option === 'string' ? option : option.value"
-                                                v-on="on"
-                                                v-bind="attrs"
+                                                v-on="onTraitModal"
+                                                v-bind="attrsTraitModal"
                                                 :selected="trait[type] !== undefined && option.value.toLowerCase() === trait[type].toLowerCase()">
                                             {{typeof option === 'string' ? option : option.value}}
                                         </option>
@@ -82,13 +82,13 @@
         watch: {
             modal() {
                 if (!this.modal) {
-                    this.trait = _.clone(this.traitData);
+                    this.trait = _.cloneDeep(this.traitData);
                 }
             }
         },
         data() {
             return {
-                trait: _.clone(this.traitData),
+                trait: _.cloneDeep(this.traitData),
                 raw: TraitsAndTalents.getTrait(this.traitData.name),
                 tooltip: false,
                 modal: false,
@@ -115,6 +115,7 @@
                 this.$emit('removeAll', this.trait.name);
             },
             traitClicked(event) {
+                if (!this.edit) return;
                 if (event.ctrlKey) {
                     this.removeTrait();
                 }

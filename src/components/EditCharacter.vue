@@ -26,7 +26,7 @@
             return {
                 create: false,
                 creatureType: this.type,
-                characterData: _.clone(this.combatant),
+                characterData: _.cloneDeep(this.combatant),
             }
         },
         computed: {

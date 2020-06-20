@@ -6,15 +6,15 @@
                 <li :class="index%2 === 0 ? 'odd-row' : 'even-row'" v-for="(combatant, index) in filteredBestiary" :key="index">
                     <v-tooltip open-delay="500" right>
                         <template v-slot:activator="{ on, attrs }">
-                            <span class="combatant-line" style="width:100%" v-bind="attrs" v-on="on" @mouseenter="hover = index">
-                                <span @click="addToCombat(combatant)">{{combatant.name}}</span>
+                            <span class="combatant-line" style="width:100%" v-bind="attrs" v-on="on" @mouseenter="hover = index" @click="addToCombat(combatant)">
+                                <span>{{combatant.name}}</span>
                                 <span v-if="hover === index" class="combatant-options">
-                                    <font-awesome-icon icon="copy" @click="edit(combatant.copy())"/>
-                                    <font-awesome-icon icon="feather-alt" @click="edit(combatant)"/>
+                                    <font-awesome-icon icon="copy" @click.stop="edit(combatant.copy())"/>
+                                    <font-awesome-icon icon="feather-alt" @click.stop="edit(combatant)"/>
                                 </span>
                             </span>
                         </template>
-                        <combatant-view style="color:black" :combatant="combatant" :edit="false"></combatant-view>
+                        <combatant-view style="color:black" :combatant="_.cloneDeep(combatant)" :edit="false"></combatant-view>
                     </v-tooltip>
                 </li>
             </ul>
