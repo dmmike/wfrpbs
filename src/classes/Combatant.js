@@ -102,7 +102,7 @@ export class Combatant {
     }
 
     copy() {
-        let n = _.cloneDeep(this);
+        let n = this.clone();
 
         n.name = 'Copy of ' + n.name;
         n.id = getId();
