@@ -1,4 +1,5 @@
 ##[0.2.0]
+- When editing an NPC, you can check whether it's a unique NPC or not
 - Add combatants to running combat
 - Remove combatants from running combat
 - Select combatant that is in combat to view data on right column

@@ -58,6 +58,7 @@
                            @removeAll="removeAll"/>
         </div>
 
+        <label v-if="edit && isNPC">Unique NPC: <input type="checkbox" v-model="combatant.is_unique"></label>
         <div id="edit-buttons" v-if="edit" style="display:flex">
             <v-menu offset-y offset-overflow :close-on-content-click="false" attach="#edit-buttons"
                     content-class="drop-menu">
@@ -70,12 +71,6 @@
                     <button style="width:100%" @click="addSkill" :disabled="invalidSkill">Save</button>
                 </template>
             </v-menu>
-            <!--                <dropdown class="npc-button" :class-name="'npc-button'">-->
-            <!--                    <template slot="btn">+talent</template>-->
-            <!--                    <template slot="body">-->
-            <!---->
-            <!--                    </template>-->
-            <!--                </dropdown>-->
             <v-menu offset-y offset-overflow nudge-left="270%" :close-on-content-click="false" content-class="drop-menu">
                 <template v-slot:activator="{on, attrs}">
                     <button type="button" v-bind="attrs" v-on="on" class="npc-button">+trait</button>
@@ -94,7 +89,6 @@
                     </ul>
                 </template>
             </v-menu>
-
         </div>
     </div>
 </template>
@@ -152,8 +146,8 @@
             talents() {
                 return _.clone(this.combatant.talents).sort();
             },
-            isCharacter() {
-                return this.combatant instanceof this.$Character;
+            isNPC() {
+                return this.combatant instanceof this.$NPC;
             },
             filteredTraits() {
                 return _.clone(this.traitOptions).filter(trait => {
@@ -286,7 +280,7 @@
         text-align: center;
     }
 
-    input {
+    .stats-table input {
         all: unset;
         width: 100%;
     }
