@@ -47,7 +47,6 @@
         <div v-if="traits.length">
             <strong>Traits: </strong>
             <trait-display v-for="(trait, index) in traits"
-                           ref="trait_displays"
                            :key="trait.name"
                            :edit="edit"
                            :index="index"

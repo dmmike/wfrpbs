@@ -23,15 +23,17 @@
                             No combatants added yet
                         </td>
                     </tr>
-                    <combat-row v-for="(combatantWithInitiative, index) in combatLines"
-                                :class="{'odd-row' : index%2 === 1}"
-                                :combatant="combatantWithInitiative"
-                                :show-no="combatantsWithNumbers.includes(combatantWithInitiative.id)"
+                    <combat-row v-for="(combatantData, index) in combatLines"
+                                :class="{'odd-row': index%2 === 1, 'selected': selectedCombatant === combatantData}"
+                                :combatant="combatantData"
+                                :show-no="combatantsWithNumbers.includes(combatantData.id)"
                                 :combat-started="combatStarted"
-                                @remove="removeCombatant(combatantWithInitiative)"
-                                :initiative-type="initiativeType" :key="index"></combat-row>
+                                :initiative-type="initiativeType"
+                                :key="index"
+                                @remove="removeCombatant(combatantData)"></combat-row>
                 </tbody>
             </table>
+            {{selectedCombatant}}
         </div>
     </div>
 </template>
@@ -64,6 +66,7 @@
                 combatant: {},
                 showCharacterEditor: false,
                 createType: 'npc',
+                selectedCombatant: null,
             }
         },
         computed: {
@@ -90,6 +93,9 @@
             this.$root.$on('edit-combatant', this.edit);
             this.$root.$on('new-combatant', this.newCharacter);
             this.$root.$on('add-to-combat', this.addToCombat)
+            this.$root.$on('select-combatant', (combatant) => {
+                this.selectedCombatant = combatant
+            });
         },
         methods: {
             determineInitiative() {
@@ -143,7 +149,7 @@
                             return results.winner === 'A' ? -1 : 1;
                         }).forEach(combatant => {
                             if (this.grouped) {
-                                tiedCombatantsById[combatant.id].forEach(combatant => orderedCombatants.push(combatant));
+                                tiedCombatantsById[combatant.id].sort((a, b) => a.no - b.no).forEach(combatant => orderedCombatants.push(combatant));
                             } else {
                                 orderedCombatants.push(combatant);
                             }
@@ -206,6 +212,8 @@
                 this.combatants.splice(this.combatants.findIndex(c => {
                     return c.id === combatant.id && c.no === no;
                 }), 1);
+
+                if (combatant === this.selectedCombatant) this.$root.$emit('select-combatant', null);
             }
         }
     }
@@ -220,7 +228,6 @@
         width: 100%;
         margin: 0;
         border-collapse: collapse;
-        border-style: hidden;
     }
 
     #combat-table thead {
@@ -228,9 +235,22 @@
         border-bottom: solid 3px black;
     }
 
+    #combat-table thead th {
+        border-top: none;
+    }
+
     #combat-table th, #combat-table tbody td {
         padding: 0 5px;
         border: 1px solid black;
+    }
+    #combat-table th:first-of-type, #combat-table th:last-of-type,
+    #combat-table td:first-of-type, #combat-table td:last-of-type {
+        border-left: none;
+        border-right: none;
+    }
+
+    #combat-table tr:last-of-type td {
+        border-bottom: none;
     }
 
     #combat-table tr {
@@ -239,4 +259,11 @@
         overflow-x: hidden;
     }
 
+    #combat-table tbody tr:hover td {
+        background-color: rgba(0, 0, 0, 0.05);
+    }
+
+    .selected {
+        border: 3px solid #720303;
+    }
 </style>
