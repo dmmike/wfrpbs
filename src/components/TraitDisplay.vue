@@ -95,7 +95,7 @@
                 modalData: {}
             }
         },
-        mounted() {
+        created() {
             if (this.trait.is_create) {
                 if (this.raw.has) {
                     this.modal = true;

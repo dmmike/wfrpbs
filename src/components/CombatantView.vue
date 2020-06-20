@@ -236,9 +236,13 @@
     }
 
     .combatant-name {
-        text-align: center;
         font-family: headerfont;
         font-weight: bold;
+    }
+
+    .combatant-name input {
+        text-align: center;
+        width: 100%;
     }
 
     .stats-table {

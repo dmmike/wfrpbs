@@ -14,7 +14,7 @@
                                 </span>
                             </span>
                         </template>
-                        <combatant-view style="color:black" :combatant="_.cloneDeep(combatant)" :edit="false"></combatant-view>
+                        <combatant-view style="color:black" :combatant="combatant.clone()" :edit="false"></combatant-view>
                     </v-tooltip>
                 </li>
             </ul>

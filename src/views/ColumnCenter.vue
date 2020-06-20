@@ -17,13 +17,8 @@
                     <th width="auto">Conditions/Effects</th>
                 </tr>
                 </thead>
-                <tbody id="combat-table-body">
-                    <tr v-if="combatLines.length === 0">
-                        <td colspan="5">
-                            No combatants added yet
-                        </td>
-                    </tr>
-                    <combat-row v-for="(combatantData, index) in combatLines"
+                <tbody id="combat-table-body" v-if="combatants.length > 0">
+                    <combat-row v-for="(combatantData, index) in combatants"
                                 :class="{'odd-row': index%2 === 1, 'selected': selectedCombatant === combatantData}"
                                 :combatant="combatantData"
                                 :show-no="combatantsWithNumbers.includes(combatantData.id)"
@@ -33,6 +28,7 @@
                                 @remove="removeCombatant(combatantData)"></combat-row>
                 </tbody>
             </table>
+            <template v-if="combatants.length === 0">No combatants added yet</template>
         </div>
     </div>
 </template>
@@ -59,7 +55,6 @@
         },
         data() {
             return {
-                orderedCombatants: [],
                 combatStarted: false,
                 combatants: [],
                 combatant: {},
@@ -68,10 +63,12 @@
                 selectedCombatant: null,
             }
         },
+        watch: {
+            combatants() {
+                localStorage.setItem('combatants', JSON.stringify(this.combatants));
+            }
+        },
         computed: {
-            combatLines() {
-                return this.orderedCombatants.length ? this.orderedCombatants : this.combatants;
-            },
             combatantsWithNumbers() {
                 let idsFound = [];
                 let ids = [];
@@ -88,13 +85,24 @@
                 return this.combatStarted ? 'bolt' : 'bed';
             },
         },
-        mounted() {
+        created() {
+            this.loadData();
             this.$root.$on('edit-combatant', this.edit);
             this.$root.$on('new-combatant', this.newCharacter);
             this.$root.$on('add-to-combat', this.addToCombat)
             this.$root.$on('select-combatant', (combatant) => {
                 this.selectedCombatant = combatant
             });
+        },
+        mounted() {
+            window.addEventListener("keydown", (event) => {
+                if (event.target !== document.body) return;
+                switch (event.keyCode) {
+                    case 46:
+                        if (this.selectedCombatant) this.removeCombatant(this.selectedCombatant);
+                        break;
+                }
+            })
         },
         methods: {
             determineInitiative() {
@@ -158,7 +166,7 @@
                     }
                 })
 
-                this.orderedCombatants = orderedCombatants;
+                this.$set(this, 'combatants', orderedCombatants);
             },
             newCharacter(type) {
                 //TODO: Implement warning when character already selected
@@ -173,7 +181,7 @@
             },
             edit(combatant) {
                 let library = JSON.parse(localStorage.getItem('library'));
-                this.combatant = _.cloneDeep(combatant);
+                this.combatant = combatant.clone();
                 this.createType = null;
 
                 if (combatant instanceof this.$NPC) {
@@ -189,7 +197,7 @@
             },
             addToCombat(combatant) {
                 if (combatant.is_unique === false) {
-                    let clone = _.cloneDeep(combatant);
+                    let clone = combatant.clone();
                     let highestNo = 0;
                     this.combatants.forEach(c => {
                         if (c.id === combatant.id && c.no > highestNo) {
@@ -207,13 +215,22 @@
                 }
             },
             removeCombatant(combatant) {
+                console.log(combatant);
                 let no = combatant.no;
                 this.combatants.splice(this.combatants.findIndex(c => {
                     return c.id === combatant.id && c.no === no;
                 }), 1);
 
                 if (combatant === this.selectedCombatant) this.$root.$emit('select-combatant', null);
-            }
+            },
+            loadData() {
+                let data = JSON.parse(localStorage.getItem('combatants'));
+                data.forEach(rawCombatant => {
+                    let revived = this.$Combatant.revive(rawCombatant);
+                    if (rawCombatant.no) revived.no = rawCombatant.no;
+                    this.combatants.push(revived);
+                });
+            },
         }
     }
 </script>

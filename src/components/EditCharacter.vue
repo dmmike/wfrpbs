@@ -26,7 +26,7 @@
             return {
                 create: false,
                 creatureType: this.type,
-                characterData: _.cloneDeep(this.combatant),
+                characterData: this.combatant.clone(),
             }
         },
         computed: {
@@ -36,7 +36,7 @@
                 );
             }
         },
-        mounted() {
+        created() {
             if (this.type !== undefined) {
                 this.create = true;
             }
@@ -53,6 +53,10 @@
         },
         methods: {
             save() {
+                if (this.create || this.characters.currentWounds > this.characterData.stats.w) {
+                    this.characterData.currentWounds = this.characterData.stats.w.valueOf();
+                }
+
                 this.$root.$emit('save-combatant', this.characterData);
                 this.$emit('close');
             },

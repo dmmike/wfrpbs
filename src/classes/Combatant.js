@@ -108,6 +108,41 @@ export class Combatant {
         n.id = getId();
         return n;
     }
+
+    clone() {
+        let n = _.cloneDeep(this);
+        Object.defineProperty(n.stats, 'w', {get: () => {return n.determineWounds(n.traits, n.talents)}});
+
+        return n;
+    }
+
+    static revive(data) {
+        if (data.is_unique !== undefined) {
+            let npc = new NPC(
+                data.name,
+                Stats.revive(data.stats),
+                data.traits,
+                data.talents,
+                data.skills,
+                data.is_unique
+            );
+
+            npc.id = data.id;
+            return npc;
+        }
+        else {
+            let character = new Character(
+                data.name,
+                Stats.revive(data.stats),
+                data.traits,
+                data.talents,
+                data.skills,
+            );
+
+            character.id = data.id;
+            return character;
+        }
+    }
 }
 
 export class Character extends Combatant {

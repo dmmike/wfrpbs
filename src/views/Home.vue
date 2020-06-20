@@ -31,9 +31,13 @@
                 library: null,
             }
         },
-        mounted() {
+        watch: {
+            libraryOpen() {
+                localStorage.setItem('library-open', this.libraryOpen);
+            }
+        },
+        created() {
             this.loadData();
-
             this.$root.$on('save-combatant', this.saveCombatant);
             this.$root.$on('destroy-npc', this.destroyNPC);
         },
@@ -42,6 +46,8 @@
                 this.$refs.columnCenter.newCharacter(type);
             },
             loadData() {
+                let libraryOpen = localStorage.getItem('library-open');
+                if (libraryOpen) this.libraryOpen = libraryOpen === 'true';
                 let data = JSON.parse(localStorage.getItem('library'));
                 let library = {
                     bestiary: {},

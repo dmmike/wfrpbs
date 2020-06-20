@@ -23,7 +23,7 @@
                 selectedCombatant: null
             }
         },
-        mounted() {
+        created() {
             this.$root.$on('select-combatant', (combatant) => this.selectedCombatant = _.cloneDeep(combatant));
         },
     }
