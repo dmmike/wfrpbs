@@ -14,6 +14,7 @@
 <script>
     import CombatantView from "@/components/CombatantView";
     import {Character, NPC} from "@/classes/Combatant";
+    import {mapMutations} from "vuex";
 
     export default {
         name: "EditCharacter",
@@ -52,16 +53,17 @@
             }
         },
         methods: {
+            ...mapMutations(['saveCombatant', 'destroyCombatant']),
             save() {
                 if (this.create || this.characters.currentWounds > this.characterData.stats.w) {
                     this.characterData.currentWounds = this.characterData.stats.w.valueOf();
                 }
 
-                this.$root.$emit('save-combatant', this.characterData);
+                this.saveCombatant(this.combatant);
                 this.$emit('close');
             },
             destroy() {
-                this.$root.$emit('destroy-npc', this.combatant.id);
+                this.destroyCombatant(this.combatant);
                 this.$emit('close');
             }
         }

@@ -1,8 +1,8 @@
 <template>
     <div id="column-left">
         <transition name="fade" mode="out-in">
-            <library v-if="libraryOpen" :library="library" @npc="$emit('new', 'npc')" @close="$emit('close')"></library>
-            <active-combatant v-else :active-combatant="selectedCombatant"></active-combatant>
+            <library v-if="libraryOpen" @npc="$emit('new', 'npc')" @close="closeLibrary"></library>
+            <active-combatant v-else></active-combatant>
         </transition>
     </div>
 </template>
@@ -10,7 +10,7 @@
 <script>
     import ActiveCombatant from "@/components/ActiveCombatant";
     import Library from "@/components/Library";
-    import {Combatant} from "@/classes/Combatant";
+    import {mapMutations, mapState} from "vuex";
 
     export default {
         name: "ColumnLeft",
@@ -18,14 +18,12 @@
             ActiveCombatant,
             Library
         },
-        props: {
-            selectedCombatant: Combatant,
-            libraryOpen: {
-                type: Boolean,
-                default: false,
-            },
-            library: Object,
-        },
+        computed: mapState([
+            'libraryOpen',
+        ]),
+        methods: {
+            ...mapMutations(['closeLibrary'])
+        }
     }
 </script>
 

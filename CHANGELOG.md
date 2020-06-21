@@ -1,3 +1,6 @@
+##[0.3.0]
+- Implement Vuex for global variables and functions
+
 ##[0.2.1]
 - Fix: Check for data on load in center column
 

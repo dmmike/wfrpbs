@@ -42,7 +42,7 @@
         </div>
         <div v-if="talents.length">
             <strong>Talents: </strong>
-            <span v-for="(talent, index) in talents" :key="index"></span>
+<!--            <span v-for="(talent, index) in talents" :key="index"></span>-->
         </div>
         <div v-if="traits.length">
             <strong>Traits: </strong>
@@ -96,6 +96,7 @@
     import Dropdown from 'bp-vuejs-dropdown';
     import TraitsAndTalents from "@/classes/TraitsAndTalents";
     import TraitDisplay from "@/components/TraitDisplay";
+    import {mapState} from "vuex";
 
     export default {
         name: "CombatantView",
@@ -115,12 +116,12 @@
                 skillName: '',
                 skillScore: 30,
                 stats: ['WS', 'BS', 'S', 'T', 'I', 'Agi', 'Dex', 'Int', 'WP', 'Fel'],
-                traitOptions: TraitsAndTalents.TRAITS,
                 traitFilter: '',
                 traitEdit: {},
             }
         },
         computed: {
+            ...mapState(['allTraits']),
             st() {
                 return this.combatant.stats;
             },
@@ -149,7 +150,7 @@
                 return this.combatant instanceof this.$NPC;
             },
             filteredTraits() {
-                return _.cloneDeep(this.traitOptions).filter(trait => {
+                return _.cloneDeep(this.allTraits).filter(trait => {
                     let filter = this.traitFilter === '' || (trait.name.toLowerCase().includes(this.traitFilter.toLowerCase()) || trait.description.toLowerCase().includes(this.traitFilter.toLowerCase())),
                         available = trait.multi === true || !this.traits.some(tr => tr.name === trait.name);
                     return filter && available;

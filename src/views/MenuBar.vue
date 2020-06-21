@@ -1,13 +1,14 @@
 <template>
     <div id="menu-bar">
         <div id="left-line"></div>
-        <div id="menu"><h4 @click="$emit('menu')">Menu</h4></div>
+        <div id="menu"><h4 @click="openLibrary">Menu</h4></div>
         <div id="right-line"></div>
     </div>
 </template>
 
 <script>
     import linehalf from '@/assets/linehalf.png';
+    import {mapMutations} from "vuex";
 
     export default {
         name: "MenuBar",
@@ -15,6 +16,9 @@
             return {
                 line: linehalf
             }
+        },
+        methods: {
+            ...mapMutations(['openLibrary'])
         }
     }
 </script>

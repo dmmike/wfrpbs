@@ -1,8 +1,8 @@
 <template>
     <div id="home">
-        <menu-bar @menu="libraryOpen=!libraryOpen"></menu-bar>
+        <menu-bar></menu-bar>
         <div id="column-container">
-            <column-left class="small-column" :selected-combatant="selectedCombatant" :library="library" :library-open="libraryOpen" @new="newCharacter" @close="libraryOpen = false"></column-left>
+            <column-left class="small-column" @new="newCharacter"></column-left>
             <column-center ref="columnCenter" class="main-column" @save-combatant="saveCombatant"></column-center>
             <column-right class="small-column"></column-right>
         </div>
@@ -14,6 +14,7 @@
     import ColumnLeft from '@/views/ColumnLeft';
     import ColumnRight from "@/views/ColumnRight";
     import MenuBar from "@/views/MenuBar";
+    import {mapMutations} from "vuex";
 
     export default {
         name: 'Home',
@@ -25,66 +26,14 @@
         },
         data() {
             return {
-                selectedCombatant: null,
-                libraryOpen: false,
                 combatHasStarted: false,
-                library: null,
             }
-        },
-        watch: {
-            libraryOpen() {
-                localStorage.setItem('library-open', this.libraryOpen);
-            }
-        },
-        created() {
-            this.loadData();
-            this.$root.$on('save-combatant', this.saveCombatant);
-            this.$root.$on('destroy-npc', this.destroyNPC);
         },
         methods: {
+            ...mapMutations(['openLibrary', 'destroyNPC', 'destroyCharacter', 'saveCombatant']),
             newCharacter(type = 'npc') {
                 this.$refs.columnCenter.newCharacter(type);
             },
-            loadData() {
-                let libraryOpen = localStorage.getItem('library-open');
-                if (libraryOpen) this.libraryOpen = libraryOpen === 'true';
-                let data = JSON.parse(localStorage.getItem('library'));
-                let library = {
-                    bestiary: {},
-                    characters: {},
-                    encounters: {},
-                };
-
-                if (data) {
-                    Object.keys(data.bestiary).forEach(id => {
-                        let npc = this.$NPC.revive(data.bestiary[id]);
-                        this.$set(library.bestiary, npc.id, npc);
-                    })
-
-                    Object.keys(data.characters).forEach(id => {
-                        let character = this.$Character.revive(data.characters[id]);
-                        this.$set(library.characters, character.id, character);
-                    })
-                }
-
-                this.library = library;
-            },
-            saveCombatant(data) {
-                if (data instanceof this.$NPC) {
-                    this.$set(this.library.bestiary, data.id, data);
-                }
-                else {
-                    this.$set(this.library.characters, data.id, data);
-                }
-                this.save();
-            },
-            destroyNPC(id) {
-                this.$delete(this.library.bestiary, id);
-                this.save();
-            },
-            save() {
-                localStorage.setItem('library', JSON.stringify(this.library));
-            }
         }
     }
 </script>

@@ -9,21 +9,15 @@
 </template>
 
 <script>
-    import {Combatant} from "@/classes/Combatant";
     import CombatantView from "@/components/CombatantView";
+    import {mapState} from "vuex";
 
     export default {
         name: "ActiveCombatant",
         components: {
             CombatantView
         },
-        props: {
-            activeCombatant: Combatant,
-            combatStarted: {
-                type: Boolean,
-                default: false,
-            }
-        }
+        computed: mapState(['activeCombatant', 'combatStarted'])
     }
 </script>
 

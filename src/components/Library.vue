@@ -23,24 +23,25 @@
         </div>
 
         <div id="library-content">
-            <bestiary-content :npcs="true" :bestiary="library.bestiary" v-if="tab===0"></bestiary-content>
-            <bestiary-content :npcs="false" :bestiary="library.characters" v-if="tab===1"></bestiary-content>
-            <encounters-content :encounters="library.encounters" v-if="tab===2"></encounters-content>
+            <transition name="fade" mode="out-in">
+                <bestiary-content key="npcs" :npcs="true" :bestiary="library.bestiary" v-if="tab===0"></bestiary-content>
+                <bestiary-content key="characters" :npcs="false" :bestiary="library.characters" v-if="tab===1"></bestiary-content>
+<!--                <encounters-content :encounters="library.encounters" v-if="tab===2"></encounters-content>-->
+            </transition>
         </div>
     </div>
 </template>
 
 <script>
     import BestiaryContent from "@/components/library_components/BestiaryContent";
+    import {mapState} from "vuex";
 
     export default {
         name: "Library",
         components: {
             BestiaryContent
         },
-        props: {
-            library: Object
-        },
+        computed: mapState(['library']),
         data() {
             return {
                 tab: 0

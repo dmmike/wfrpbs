@@ -1,5 +1,5 @@
 <template>
-    <tr @click="selectCombatant">
+    <tr @click="combatantClicked">
         <td class="center">{{formattedInitiative}}</td>
         <td>{{combatant.name}} <template v-if="showNo">{{combatant.no}}</template></td>
         <td class="center clickable" @click.stop="alterWounds">{{combatant.currentWounds}} / {{combatant.stats.w}}</td>
@@ -10,16 +10,16 @@
 </template>
 
 <script>
+    import {mapMutations, mapState} from "vuex";
+
     export default {
         name: "CombatRow",
         props: {
             combatant: {},
-            initiativeType: String,
-            useMaxAdvantage: Boolean,
             showNo: Boolean,
-            combatStarted: Boolean,
         },
         computed: {
+            ...mapState(['initiativeType', 'useMaxAdvantage', 'combatStarted']),
             formattedInitiative() {
                 if (!this.combatStarted) return '-';
                 switch (this.initiativeType) {
@@ -29,12 +29,13 @@
             },
         },
         methods: {
-            selectCombatant(event) {
+            ...mapMutations(['selectCombatant']),
+            combatantClicked(event) {
                 if (event.ctrlKey || event.altKey) {
                     this.$emit('remove');
                 }
                 else {
-                    this.$root.$emit('select-combatant', this.combatant);
+                    this.selectCombatant(this.combatant);
                 }
             },
             alterWounds(event) {
