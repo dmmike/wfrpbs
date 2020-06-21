@@ -24,8 +24,7 @@
                                 :show-no="combatantsWithNumbers.includes(combatantData.id)"
                                 :combat-started="combatStarted"
                                 :initiative-type="initiativeType"
-                                :key="index"
-                                @remove="removeCombatant(combatantData)"></combat-row>
+                                :key="index"></combat-row>
                 </tbody>
             </table>
             <template v-if="combatants.length === 0">No combatants added yet</template>
@@ -37,6 +36,7 @@
     import Roller from "@/classes/Roller";
     import CombatRow from "@/components/CombatRow";
     import EditCharacter from "@/components/EditCharacter";
+    import {mapState} from "vuex";
 
     export default {
         name: "ColumnCenter",
@@ -56,19 +56,14 @@
         data() {
             return {
                 combatStarted: false,
-                combatants: [],
                 combatant: {},
                 showCharacterEditor: false,
                 createType: 'npc',
                 selectedCombatant: null,
             }
         },
-        watch: {
-            combatants() {
-                localStorage.setItem('combatants', JSON.stringify(this.combatants));
-            }
-        },
         computed: {
+            ...mapState(['combatants', 'library']),
             combatantsWithNumbers() {
                 let idsFound = [];
                 let ids = [];
@@ -86,13 +81,8 @@
             },
         },
         created() {
-            this.loadData();
             this.$root.$on('edit-combatant', this.edit);
-            this.$root.$on('new-combatant', this.newCharacter);
-            this.$root.$on('add-to-combat', this.addToCombat)
-            this.$root.$on('select-combatant', (combatant) => {
-                this.selectedCombatant = combatant
-            });
+            this.$root.$on('new-combatant', this.newCombatant);
         },
         mounted() {
             window.addEventListener("keydown", (event) => {
@@ -168,69 +158,26 @@
 
                 this.$set(this, 'combatants', orderedCombatants);
             },
-            newCharacter(type) {
+            newCombatant(type) {
                 //TODO: Implement warning when character already selected
                 this.combatant = null;
                 this.createType = type;
                 this.showCharacterEditor = true;
             },
-            saveCombatant(combatant) {
-                this.combatant = null;
-                this.showCharacterEditor = false;
-                this.$emit('save-combatant', combatant);
-            },
             edit(combatant) {
-                let library = JSON.parse(localStorage.getItem('library'));
                 this.combatant = combatant.clone();
                 this.createType = null;
 
                 if (combatant instanceof this.$NPC) {
-                    if (library.bestiary[combatant.id] === undefined) {
+                    if (this.library.bestiary[combatant.id] === undefined) {
                         this.createType = 'npc';
                     }
                 }
-                else if (library.characters[combatant.id] === undefined) {
+                else if (this.library.characters[combatant.id] === undefined) {
                     this.createType = 'character';
                 }
 
                 this.showCharacterEditor = true;
-            },
-            addToCombat(combatant) {
-                if (combatant.is_unique === false) {
-                    let clone = combatant.clone();
-                    let highestNo = 0;
-                    this.combatants.forEach(c => {
-                        if (c.id === combatant.id && c.no > highestNo) {
-                            highestNo = c.no;
-                        }
-                    })
-                    this.$set(clone, 'no', highestNo + 1);
-                    this.$set(clone, 'currentWounds', clone.stats.w);
-                    this.$set(clone, 'initiative', clone.getInitiative());
-                    this.combatants.push(clone);
-                }
-                else if (this.combatants.findIndex(com => com.id === combatant.id) === -1) {
-                    this.$set(combatant, 'initiative', combatant.getInitiative());
-                    this.combatants.push(combatant);
-                }
-            },
-            removeCombatant(combatant) {
-                let no = combatant.no;
-                this.combatants.splice(this.combatants.findIndex(c => {
-                    return c.id === combatant.id && c.no === no;
-                }), 1);
-
-                if (combatant === this.selectedCombatant) this.$root.$emit('select-combatant', null);
-            },
-            loadData() {
-                let data = JSON.parse(localStorage.getItem('combatants'));
-                if (data) {
-                    data.forEach(rawCombatant => {
-                        let revived = this.$Combatant.revive(rawCombatant);
-                        if (rawCombatant.no) revived.no = rawCombatant.no;
-                        this.combatants.push(revived);
-                    });
-                }
             },
         }
     }

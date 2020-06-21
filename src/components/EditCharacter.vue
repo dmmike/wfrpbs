@@ -27,7 +27,7 @@
             return {
                 create: false,
                 creatureType: this.type,
-                characterData: this.combatant.clone(),
+                characterData: null,
             }
         },
         computed: {
@@ -51,6 +51,9 @@
                     this.characterData = new this.$Character();
                 }
             }
+            else {
+                this.characterData = this.combatant.clone();
+            }
         },
         methods: {
             ...mapMutations(['saveCombatant', 'destroyCombatant']),
@@ -59,7 +62,7 @@
                     this.characterData.currentWounds = this.characterData.stats.w.valueOf();
                 }
 
-                this.saveCombatant(this.combatant);
+                this.saveCombatant(this.characterData);
                 this.$emit('close');
             },
             destroy() {

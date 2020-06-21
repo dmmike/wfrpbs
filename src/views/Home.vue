@@ -1,11 +1,18 @@
 <template>
     <div id="home">
-        <menu-bar></menu-bar>
-        <div id="column-container">
-            <column-left class="small-column" @new="newCharacter"></column-left>
-            <column-center ref="columnCenter" class="main-column" @save-combatant="saveCombatant"></column-center>
-            <column-right class="small-column"></column-right>
-        </div>
+        <transition name="fade" mode="out-in">
+            <div v-if="loading">
+                Loading...
+            </div>
+            <div v-else>
+                <menu-bar></menu-bar>
+                <div id="column-container">
+                    <column-left class="small-column" @new="newCharacter"></column-left>
+                    <column-center ref="columnCenter" class="main-column"></column-center>
+                    <column-right class="small-column"></column-right>
+                </div>
+            </div>
+        </transition>
     </div>
 </template>
 
@@ -14,7 +21,7 @@
     import ColumnLeft from '@/views/ColumnLeft';
     import ColumnRight from "@/views/ColumnRight";
     import MenuBar from "@/views/MenuBar";
-    import {mapMutations} from "vuex";
+    import {mapMutations, mapState} from "vuex";
 
     export default {
         name: 'Home',
@@ -29,8 +36,11 @@
                 combatHasStarted: false,
             }
         },
+        computed: {
+            ...mapState(['loading'])
+        },
         methods: {
-            ...mapMutations(['openLibrary', 'destroyNPC', 'destroyCharacter', 'saveCombatant']),
+            ...mapMutations(['openLibrary', 'destroyNPC', 'destroyCharacter']),
             newCharacter(type = 'npc') {
                 this.$refs.columnCenter.newCharacter(type);
             },

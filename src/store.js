@@ -4,6 +4,10 @@ import {Combatant, NPC} from "@/classes/Combatant";
 import Vue from 'vue';
 
 Vue.use(Vuex);
+export const DEFAULT_SETTINGS = {
+    initiativeType: 'default',
+    useMaxAdvantage: false,
+}
 
 export const store = new Vuex.Store({
     state: {
@@ -13,19 +17,22 @@ export const store = new Vuex.Store({
             characters: {},
             encounters: {},
         },
-        allTraits: TraitsAndTalents.TRAITS,
+        combatants: [],
 
         // Selections
         activeCombatant: null,
         selectedCombatant: null,
 
         // View state
+        loading: true,
         combatStarted: false,
         libraryOpen: false,
 
         // Settings
-        initiativeType: 'default',
-        useMaxAdvantage: false,
+        ...DEFAULT_SETTINGS
+    },
+    getters: {
+        allTraits() {return TraitsAndTalents.TRAITS},
     },
     mutations: {
         openLibrary(state) {
@@ -43,37 +50,84 @@ export const store = new Vuex.Store({
         deselectCombatant(state) {
             state.selectedCombatant = null;
         },
-        setNPC(state, combatant) {
-            Vue.set(state.library.bestiary, combatant.id, combatant);
-        },
-        destroyNPC(state, id) {
-            Vue.delete(state.library.bestiary, id);
-            store.dispatch('saveLibrary');
-        },
-        setCharacter(state, combatant) {
-            Vue.set(state.library.characters, combatant.id, combatant);
-        },
-        destroyCharacter(state, id) {
-            Vue.delete(state.library.characters, id);
-            store.dispatch('saveLibrary');
-        },
         saveCombatant(state, combatant) {
-            store.commit(combatant instanceof NPC ? 'setNPC' : 'setCharacter', combatant);
-            store.dispatch('saveLibrary');
+            Vue.set(state.library[combatant instanceof NPC ? 'bestiary' : 'characters'], combatant.id, combatant);
         },
         destroyCombatant(state, combatant) {
-            store.commit(combatant instanceof NPC ? 'destroyNPC' : 'destroyCharacter', combatant.id);
+            Vue.delete(state.library[combatant instanceof NPC ? 'bestiary' : 'characters'], combatant.id);
         },
-        importLibrary(state, combatants) {
-            combatants.forEach(data => {
-                let combatant = Combatant.revive(data);
-                store.commit(combatant instanceof NPC ? 'setNPC' : 'setCharacter', combatant);
-            })
-        }
+        ejectCombatant(state, combatant) {
+            let no = combatant.no;
+            state.combatants.splice(state.combatants.findIndex(c => {
+                return c.id === combatant.id && c.no === no;
+            }), 1);
+
+            if (combatant === state.selectedCombatant) store.commit('deselectCombatant');
+        },
+        addCombatant(state, combatant) {
+            if (combatant.is_unique === false) {
+                let clone = combatant.clone();
+                let highestNo = 0;
+                state.combatants.forEach(c => {
+                    if (c.id === combatant.id && c.no > highestNo) {
+                        highestNo = c.no;
+                    }
+                })
+                Vue.set(clone, 'no', highestNo + 1);
+                Vue.set(clone, 'currentWounds', clone.stats.w);
+                Vue.set(clone, 'initiative', clone.getInitiative());
+                state.combatants.push(clone);
+            }
+            else if (state.combatants.findIndex(com => com.id === combatant.id) === -1) {
+                Vue.set(combatant, 'initiative', combatant.getInitiative());
+                state.combatants.push(combatant);
+            }
+        },
+        finishLoading(state, data) {
+            if (data) {
+                this.replaceState(data);
+            }
+            state.loading = false;
+        },
     },
     actions: {
-        saveLibrary(context) {
-            localStorage.setItem('library', JSON.stringify(context.state.library));
-        }
-    }
+        loadData(context) {
+            let savedState = JSON.parse(localStorage.getItem('savedState'));
+            if (savedState) {
+                let reviveCombatant = (combatant) => {
+                    if (combatant === null) return null;
+                    let revived = Combatant.revive(combatant);
+                    if (combatant.no) revived.no = combatant.no;
+                    return revived;
+                }
+                let reviveCombatants = (combs) => {
+                    let revived;
+                    if (Array.isArray(combs)) {
+                        revived = [];
+                        combs.forEach(combatant => revived.push(reviveCombatant(combatant)));
+                    }
+                    else {
+                        revived = {};
+                        Object.keys(combs).forEach(id => {
+                            Vue.set(revived, id, reviveCombatant(combs[id]));
+                        })
+                    }
+                    return revived;
+                }
+                //Revive all combatants
+                savedState.library.bestiary = reviveCombatants(savedState.library.bestiary);
+                savedState.library.characters = reviveCombatants(savedState.library.characters);
+                savedState.combatants = reviveCombatants(savedState.combatants);
+                savedState.selectedCombatant = reviveCombatant(savedState.selectedCombatant);
+                savedState.activeCombatant = reviveCombatant(savedState.activeCombatant);
+            }
+
+            context.commit('finishLoading', savedState);
+        },
+    },
 });
+
+store.subscribe(({type, payload}, state) => {
+    if (type === 'finishLoading') return;
+    localStorage.setItem('savedState', JSON.stringify(state));
+})

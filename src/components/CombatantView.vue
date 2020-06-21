@@ -57,38 +57,38 @@
                            @removeAll="removeAll"/>
         </div>
 
-<!--        <label v-if="edit && isNPC">Unique NPC: <input type="checkbox" v-model="combatant.is_unique"></label>-->
-<!--        <div id="edit-buttons" v-if="edit">-->
-<!--            <v-menu offset-y offset-overflow :close-on-content-click="false" attach="#edit-buttons"-->
-<!--                    content-class="drop-menu">-->
-<!--                <template v-slot:activator="{on, attrs}">-->
-<!--                    <button type="button" v-bind="attrs" v-on="on" class="npc-button">+skill</button>-->
-<!--                </template>-->
-<!--                <template>-->
-<!--                    <label><strong>Name:</strong><input type="text" v-model="skillName"></label>-->
-<!--                    <label><strong>Score:</strong><input type="text" @keypress="isNumber($event)" v-model="skillScore"></label>-->
-<!--                    <button style="width:100%" @click="addSkill" :disabled="invalidSkill">Save</button>-->
-<!--                </template>-->
-<!--            </v-menu>-->
-<!--            <v-menu offset-y offset-overflow nudge-left="270%" :close-on-content-click="false" content-class="drop-menu">-->
-<!--                <template v-slot:activator="{on, attrs}">-->
-<!--                    <button type="button" v-bind="attrs" v-on="on" class="npc-button">+trait</button>-->
-<!--                </template>-->
-<!--                <template>-->
-<!--                    <input type="search" v-model="traitFilter" class="trait-filter" placeholder="Type to filter by name and description">-->
-<!--                    <ul style="" class="trait-list">-->
-<!--                        <li :id="'trait' + trait.name" v-for="trait in filteredTraits" :key="trait.name">-->
-<!--                            <v-tooltip bottom open-delay="800" max-width="80%">-->
-<!--                                <template v-slot:activator="{ on, attrs }">-->
-<!--                                    <span v-bind="attrs" v-on="on" @click="addTrait(trait)">{{trait.name}}</span>-->
-<!--                                </template>-->
-<!--                                <span v-html="trait.description"></span>-->
-<!--                            </v-tooltip>-->
-<!--                        </li>-->
-<!--                    </ul>-->
-<!--                </template>-->
-<!--            </v-menu>-->
-<!--        </div>-->
+        <label v-if="edit && isNPC">Unique NPC: <input type="checkbox" v-model="combatant.is_unique"></label>
+        <div id="edit-buttons" v-if="edit">
+            <v-menu offset-y offset-overflow :close-on-content-click="false" attach="#edit-buttons"
+                    content-class="drop-menu">
+                <template v-slot:activator="{on, attrs}">
+                    <button type="button" v-bind="attrs" v-on="on" class="npc-button">+skill</button>
+                </template>
+                <template>
+                    <label><strong>Name:</strong><input type="text" v-model="skillName"></label>
+                    <label><strong>Score:</strong><input type="text" @keypress="isNumber($event)" v-model="skillScore"></label>
+                    <button style="width:100%" @click="addSkill" :disabled="invalidSkill">Save</button>
+                </template>
+            </v-menu>
+            <v-menu offset-y offset-overflow nudge-left="270%" :close-on-content-click="false" content-class="drop-menu">
+                <template v-slot:activator="{on, attrs}">
+                    <button type="button" v-bind="attrs" v-on="on" class="npc-button" @click="traitFilter = ''">+trait</button>
+                </template>
+                <template>
+                    <input type="search" v-model="traitFilter" class="trait-filter" placeholder="Type to filter by name and description">
+                    <ul style="" class="trait-list">
+                        <li :id="'trait' + trait.name" v-for="trait in filteredTraits" :key="trait.name">
+                            <v-tooltip bottom open-delay="800" max-width="80%">
+                                <template v-slot:activator="{ on, attrs }">
+                                    <span v-bind="attrs" v-on="on" @click="addTrait(trait)">{{trait.name}}</span>
+                                </template>
+                                <span v-html="trait.description"></span>
+                            </v-tooltip>
+                        </li>
+                    </ul>
+                </template>
+            </v-menu>
+        </div>
     </div>
 </template>
 
@@ -96,7 +96,7 @@
     import Dropdown from 'bp-vuejs-dropdown';
     import TraitsAndTalents from "@/classes/TraitsAndTalents";
     import TraitDisplay from "@/components/TraitDisplay";
-    import {mapState} from "vuex";
+    import {mapGetters} from "vuex";
 
     export default {
         name: "CombatantView",
@@ -121,7 +121,7 @@
             }
         },
         computed: {
-            ...mapState(['allTraits']),
+            ...mapGetters(['allTraits']),
             st() {
                 return this.combatant.stats;
             },
@@ -334,6 +334,7 @@
     }
 
     .drop-menu .trait-filter {
+        width:100%;
         margin-bottom: 10px;
     }
 

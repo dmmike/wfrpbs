@@ -1,6 +1,6 @@
 <template>
     <div id="library">
-        <h2 class="title">Library <img class="close-button" src="@/assets/close.png" @click="$emit('close')"></h2>
+        <h2 class="title">Library <img class="close-button" src="@/assets/close.png" @click="closeLibrary"></h2>
         <div id="tabs" class="row">
             <div class="col" :class="{active: tab===0}" @click="tab=0">
                 <transition name="banner">
@@ -34,7 +34,7 @@
 
 <script>
     import BestiaryContent from "@/components/library_components/BestiaryContent";
-    import {mapState} from "vuex";
+    import {mapMutations, mapState} from "vuex";
 
     export default {
         name: "Library",
@@ -47,6 +47,9 @@
                 tab: 0
             }
         },
+        methods: {
+            ...mapMutations(['closeLibrary'])
+        }
     }
 </script>
 

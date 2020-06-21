@@ -1,3 +1,6 @@
+##[0.4.0]
+- Further implement Vuex, major refactor of use of variables and saving of state
+
 ##[0.3.0]
 - Implement Vuex for global variables and functions
 

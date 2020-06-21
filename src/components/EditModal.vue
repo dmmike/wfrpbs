@@ -1,6 +1,6 @@
 <template>
     <transition name="fade">
-        <div class="modal-mask" v-if="active" @click="killModal">
+        <div class="modal-mask" v-if="active" @mousedown="killModal">
             <div class="modal-wrapper">
                 <div class="modal-container">
                     <h2 class="title"><slot name="title">Title</slot></h2>
@@ -63,7 +63,7 @@
         position:relative;
         width: 500px;
         height: 635px;
-        margin: 0px auto;
+        margin: 0 auto;
         padding: 30px 40px;
         background-color: transparent;
         background-image: url('~@/assets/pagebackground.png');

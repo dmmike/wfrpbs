@@ -8,6 +8,7 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 import Dropdown from 'bp-vuejs-dropdown';
 import lodash from 'lodash';
 import vuetify from '@/plugins/vuetify'
+//TODO: Implement clickoutside instead of custom solution
 import ClickOutside from "vuetify/lib/directives/click-outside";
 
 import {Character, Combatant, NPC} from "@/classes/Combatant";
@@ -49,13 +50,6 @@ new Vue({
         return h(App)
     },
     beforeCreate() {
-        let libraryOpen = localStorage.getItem('library-open');
-        // if (libraryOpen) this.setLibraryOpen(libraryOpen === 'true');
-        if (libraryOpen) store.commit('setLibraryOpen', libraryOpen === 'true');
-
-        let data = JSON.parse(localStorage.getItem('library'));
-        if (data) {
-            store.commit('importLibrary', Object.values(data.bestiary).concat(Object.values(data.characters)));
-       }
+        store.dispatch('loadData');
     },
 }).$mount('#app')

@@ -6,7 +6,7 @@
                 <li :class="index%2 === 0 ? 'odd-row' : 'even-row'" v-for="(combatant, index) in filteredBestiary" :key="index">
                     <v-tooltip open-delay="500" right>
                         <template v-slot:activator="{ on, attrs }">
-                            <span class="combatant-line" style="width:100%" v-bind="attrs" v-on="on" @mouseenter="hover = index" @click="addToCombat(combatant)">
+                            <span class="combatant-line" style="width:100%" v-bind="attrs" v-on="on" @mouseenter="hover = index" @click="addCombatant(combatant)">
                                 <span>{{combatant.name}}</span>
                                 <span v-if="hover === index" class="combatant-options">
                                     <font-awesome-icon icon="copy" @click.stop="edit(combatant.copy())"/>
@@ -27,6 +27,8 @@
 
 <script>
     import CombatantView from "@/components/CombatantView";
+    import {mapMutations} from "vuex";
+
     export default {
         name: "BestiaryContent",
         components: {CombatantView},
@@ -48,6 +50,7 @@
             }
         },
         methods: {
+            ...mapMutations(['addCombatant']),
             isOddRow(id) {
                 return Object.keys(this.filteredBestiary).findIndex(key => key === id )%2;
             },

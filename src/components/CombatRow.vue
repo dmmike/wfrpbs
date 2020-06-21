@@ -29,10 +29,10 @@
             },
         },
         methods: {
-            ...mapMutations(['selectCombatant']),
+            ...mapMutations(['selectCombatant', 'ejectCombatant']),
             combatantClicked(event) {
                 if (event.ctrlKey || event.altKey) {
-                    this.$emit('remove');
+                    this.ejectCombatant(this.combatant);
                 }
                 else {
                     this.selectCombatant(this.combatant);
