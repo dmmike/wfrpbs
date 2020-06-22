@@ -54,7 +54,7 @@
                 }
             },
             damageCombatant(event) {
-                if (event && event.type === 'keydown' && event.keyCode !== 13) return;
+                if (event.type === 'keydown' && event.keyCode !== 13) return;
                 this.dealDamage({combatant: this.combatant, damage: this.damage});
                 this.wound = false;
             },

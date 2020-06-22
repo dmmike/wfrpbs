@@ -122,8 +122,14 @@ export const store = new Vuex.Store({
                 savedState.library.bestiary = reviveCombatants(savedState.library.bestiary);
                 savedState.library.characters = reviveCombatants(savedState.library.characters);
                 savedState.combatants = reviveCombatants(savedState.combatants);
-                savedState.selectedCombatant = reviveCombatant(savedState.selectedCombatant);
-                savedState.activeCombatant = reviveCombatant(savedState.activeCombatant);
+                if (savedState.selectedCombatant) {
+                    let com = savedState.selectedCombatant;
+                    savedState.selectedCombatant = savedState.combatants.find(co => co.id === com.id && co.no === com.no);
+                }
+                if (savedState.activeCombatant) {
+                    let com = savedState.activeCombatant;
+                    savedState.activeCombatant = savedState.combatants.find(co => co.id === com.id && co.no === com.no);
+                }
             }
 
             context.commit('finishLoading', savedState);
