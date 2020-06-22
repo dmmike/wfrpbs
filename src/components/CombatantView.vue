@@ -229,7 +229,7 @@
 
 <style scoped>
     #combatant-view {
-        max-width: 400px;
+        width: 400px;
         padding: 15px;
         background-image: url('~@/assets/background-stats.png');
         background-size: 100% 100%;
@@ -250,6 +250,9 @@
         text-align: center;
         margin-bottom: 0.5em;
         border-collapse: collapse;
+    }
+    .stats-table td {
+        min-width: 30px;
     }
 
     tr:last-child {
