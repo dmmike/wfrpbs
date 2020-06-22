@@ -89,6 +89,10 @@ export const store = new Vuex.Store({
             }
             state.loading = false;
         },
+        setCombatantWounds(state, {combatant, currentWounds}) {
+            let combatantInState = state.combatants.find(com => com === combatant);
+            Vue.set(combatantInState, 'currentWounds', currentWounds);
+        }
     },
     actions: {
         loadData(context) {
@@ -124,6 +128,12 @@ export const store = new Vuex.Store({
 
             context.commit('finishLoading', savedState);
         },
+        dealDamage(context, {combatant, damage}) {
+            context.commit('setCombatantWounds', {
+                combatant: combatant,
+                currentWounds: Math.min(Math.max(combatant.currentWounds - damage, 0), combatant.stats.w),
+            })
+        }
     },
 });
 

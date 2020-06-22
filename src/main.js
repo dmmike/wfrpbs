@@ -21,13 +21,14 @@ import {
     faBalanceScale,
     faBed,
     faBolt,
+    faCheck,
     faCopy,
     faFeatherAlt,
     faHeart,
     faUserSlash
 } from '@fortawesome/free-solid-svg-icons'
 
-library.add(faFeatherAlt, faUserSlash, faCopy, faHeart, faBalanceScale, faBolt, faBed);
+library.add(faFeatherAlt, faUserSlash, faCopy, faHeart, faBalanceScale, faBolt, faBed, faCheck);
 
 
 Vue.prototype.$Combatant = Combatant;

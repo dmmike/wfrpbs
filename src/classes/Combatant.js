@@ -117,8 +117,9 @@ export class Combatant {
     }
 
     static revive(data) {
+        let comb;
         if (data.is_unique !== undefined) {
-            let npc = new NPC(
+            comb = new NPC(
                 data.name,
                 Stats.revive(data.stats),
                 data.traits,
@@ -126,22 +127,20 @@ export class Combatant {
                 data.skills,
                 data.is_unique
             );
-
-            npc.id = data.id;
-            return npc;
         }
         else {
-            let character = new Character(
+            comb = new Character(
                 data.name,
                 Stats.revive(data.stats),
                 data.traits,
                 data.talents,
                 data.skills,
             );
-
-            character.id = data.id;
-            return character;
         }
+
+        comb.id = data.id;
+        comb.currentWounds = data.currentWounds;
+        return comb;
     }
 }
 
