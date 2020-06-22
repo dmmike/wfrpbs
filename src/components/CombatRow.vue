@@ -33,7 +33,7 @@
             }
         },
         computed: {
-            ...mapState(['initiativeType', 'useMaxAdvantage', 'combatStarted']),
+            ...mapState(['initiativeType', 'useMaxAdvantage', 'combatStarted', 'selectedCombatant']),
             formattedInitiative() {
                 if (!this.combatStarted) return '-';
                 switch (this.initiativeType) {
@@ -41,6 +41,18 @@
                         return Math.floor(this.combatant.initiative);
                 }
             },
+        },
+        mounted() {
+            window.addEventListener("keydown", (event) => {
+                if (event.target !== document.body) return;
+                switch (event.code) {
+                    case 'KeyD':
+                        if (this.selectedCombatant === this.combatant) {
+                            this.wound = true;
+                            this.openDamage();
+                        }
+                }
+            })
         },
         methods: {
             ...mapMutations(['selectCombatant', 'ejectCombatant']),

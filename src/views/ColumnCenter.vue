@@ -36,7 +36,7 @@
     import Roller from "@/classes/Roller";
     import CombatRow from "@/components/CombatRow";
     import EditCharacter from "@/components/EditCharacter";
-    import {mapState} from "vuex";
+    import {mapMutations, mapState} from "vuex";
 
     export default {
         name: "ColumnCenter",
@@ -59,11 +59,10 @@
                 combatant: {},
                 showCharacterEditor: false,
                 createType: 'npc',
-                selectedCombatant: null,
             }
         },
         computed: {
-            ...mapState(['combatants', 'library']),
+            ...mapState(['combatants', 'library', 'selectedCombatant']),
             combatantsWithNumbers() {
                 let idsFound = [];
                 let ids = [];
@@ -87,14 +86,15 @@
         mounted() {
             window.addEventListener("keydown", (event) => {
                 if (event.target !== document.body) return;
-                switch (event.keyCode) {
-                    case 46:
-                        if (this.selectedCombatant) this.removeCombatant(this.selectedCombatant);
+                switch (event.code) {
+                    case 'Delete':
+                        if (this.selectedCombatant) this.ejectCombatant(this.selectedCombatant);
                         break;
                 }
             })
         },
         methods: {
+            ...mapMutations(['ejectCombatant']),
             determineInitiative() {
                 let combatantsByInitiative = [];
 

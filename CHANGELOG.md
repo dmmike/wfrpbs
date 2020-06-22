@@ -1,3 +1,7 @@
+##[0.5.0]
+- Damage/heal combatants by clicking their wounds or hitting the `d` key
+- Vuex implementation fixes
+
 ##[0.4.0]
 - Further implement Vuex, major refactor of use of variables and saving of state
 
