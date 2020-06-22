@@ -1,5 +1,5 @@
 <template>
-    <div id="combatant-view">
+    <div id="combatant-view" :style="transform">
         <h3 class="combatant-name" :class="{editable: edit}">
             <input :disabled="!edit" type="text" v-model="combatant.name">
         </h3>
@@ -109,7 +109,8 @@
             edit: {
                 type: Boolean,
                 default: false
-            }
+            },
+            componentMaxWidth: Number,
         },
         data() {
             return {
@@ -159,6 +160,15 @@
             },
             invalidSkill() {
                 return !this.skillName || !this.skillScore || this.combatant.skills.findIndex(sk => sk.name.toLowerCase() === this.skillName.toLowerCase()) !== -1
+            },
+            transform() {
+                if (this.componentMaxWidth > 0 && this.componentMaxWidth < 400) {
+                    return 'transform: scale(' + this.componentMaxWidth/400 + ');' +
+                           'position: relative; left: -' + Math.floor((400 - this.componentMaxWidth)/2) + 'px;';
+                }
+                else {
+                    return '';
+                }
             }
         },
         methods: {

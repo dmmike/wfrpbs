@@ -1,8 +1,8 @@
 <template>
     <span>
         <v-tooltip bottom open-delay="500" max-width="800px">
-            <template :id="traitData.name" v-slot:activator="{ onTraitDisplay, attrsTraitDisplay }">
-                <span :class="{editable: edit}" v-on="onTraitDisplay" v-bind="attrsTraitDisplay" @click="traitClicked">
+            <template :id="traitData.name" v-slot:activator="{ on, attrs }">
+                <span :class="{editable: edit}" v-on="on" v-bind="attrs" @click="traitClicked">
                     <span v-if="traitData.count > 1">{{traitData.count}}×</span>
                     <span>{{traitData.name}}</span>
                     <span v-if="traitData.value"> ({{traitData.value}})</span>

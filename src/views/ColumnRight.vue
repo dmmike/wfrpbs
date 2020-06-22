@@ -3,7 +3,7 @@
         <transition name="fade" mode="out-in">
             <div v-if="selectedCombatant">
                 <h2 class="title">Selected Combatant <img class="close-button" src="@/assets/close.png" @click="deselectCombatant"></h2>
-                <combatant-view class="shrunk" :combatant="selectedCombatant"></combatant-view>
+                <combatant-view class="shrunk" :component-max-width="370" :combatant="selectedCombatant"></combatant-view>
             </div>
             <h2 class="title" v-else>No Combatant Selected</h2>
         </transition>
@@ -29,10 +29,10 @@
 </script>
 
 <style>
-    #column-right .shrunk {
-        transform: scale(calc(370/400));
-        position: relative;
-        left: -15px
-    }
+    /*#column-right .shrunk {*/
+        /*transform: scale(calc(370/400));*/
+        /*position: relative;*/
+        /*left: -15px*/
+    /*}*/
 
 </style>
