@@ -42,7 +42,7 @@
         </div>
         <div v-if="talents.length">
             <strong>Talents: </strong>
-<!--            <span v-for="(talent, index) in talents" :key="index"></span>-->
+            <span v-for="(talent, index) in talents" :key="index"></span>
         </div>
         <div v-if="traits.length">
             <strong>Traits: </strong>
@@ -57,7 +57,25 @@
                            @removeAll="removeAll"/>
         </div>
 
-        <label v-if="edit && isNPC">Unique NPC: <input type="checkbox" v-model="combatant.is_unique"></label>
+        <template v-if="edit && !isNPC">
+            <label>
+                <strong>Party: </strong>
+                <select v-model="combatant.party">
+                    <option v-for="party in parties" :value="party.id">{{party.name}}</option>
+                </select>
+            </label>
+            <v-menu offset-y offset-overflow :close-on-content-click="false" v-model="partyMenu">
+                <template v-slot:activator="{on, attrs}">
+                    <font-awesome-icon icon="plus" @click="openParty" v-bind="attrs" v-on="on"></font-awesome-icon>
+                </template>
+                <div style="display:flex">
+                    <label>Name: <input type="text" @keydown="newParty" v-model="newPartyName"></label>
+                    <font-awesome-icon id="confirm" icon="check" @click="newParty"/>
+                </div>
+            </v-menu>
+        </template>
+
+        <label v-if="edit && isNPC"><strong>Unique NPC:</strong> <input type="checkbox" v-model="combatant.is_unique"></label>
         <div id="edit-buttons" v-if="edit">
             <v-menu offset-y offset-overflow :close-on-content-click="false" attach="#edit-buttons"
                     content-class="drop-menu">
@@ -96,7 +114,7 @@
     import Dropdown from 'bp-vuejs-dropdown';
     import TraitsAndTalents from "@/classes/TraitsAndTalents";
     import TraitDisplay from "@/components/TraitDisplay";
-    import {mapGetters} from "vuex";
+    import {mapGetters, mapMutations, mapState} from "vuex";
 
     export default {
         name: "CombatantView",
@@ -119,10 +137,16 @@
                 stats: ['WS', 'BS', 'S', 'T', 'I', 'Agi', 'Dex', 'Int', 'WP', 'Fel'],
                 traitFilter: '',
                 traitEdit: {},
+                partyMenu: false,
+                newPartyName: '',
             }
         },
         computed: {
-            ...mapGetters(['allTraits']),
+            ...mapState(['parties']),
+            ...mapGetters(['allTraits',]),
+            partyOptions() {
+
+            },
             st() {
                 return this.combatant.stats;
             },
@@ -172,6 +196,7 @@
             }
         },
         methods: {
+            ...mapMutations(['saveParty']),
             isNumber(evt) {
                 let charCode = (evt.which) ? evt.which : evt.keyCode;
                 if (charCode > 31 && (charCode < 48 || charCode > 57) && charCode !== 45) {
@@ -233,6 +258,17 @@
                     this.combatant.skills.splice(this.combatant.skills.findIndex(sk => sk.name.toLowerCase() === skill.toLowerCase()), 1);
                 }
             },
+            newParty(event) {
+                if (event.type === 'keydown' && event.keyCode !== 13) return;
+                let party = new this.$Party(this.newPartyName);
+                this.saveParty(party);
+                this.combatant.party = party.id;
+                this.partyMenu = false;
+            },
+            openParty() {
+                this.newPartyName = '';
+                this.partyMenu = true;
+            }
         }
     }
 </script>

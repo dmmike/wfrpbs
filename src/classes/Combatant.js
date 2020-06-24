@@ -135,6 +135,7 @@ export class Combatant {
                 data.traits,
                 data.talents,
                 data.skills,
+                data.party,
             );
         }
 
@@ -151,8 +152,10 @@ export class Character extends Combatant {
         traits = [],
         talents = [],
         skills = [],
+        party = ''
     ) {
         super(name, stats, traits, talents, skills);
+        this.party = party;
     }
 
     static revive(data) {
@@ -203,5 +206,18 @@ export class NPC extends Combatant {
 
         npc.id = data.id;
         return npc;
+    }
+}
+
+export class Party {
+    constructor(name) {
+        this.id = getId();
+        this.name = name;
+    }
+
+    static revive(data) {
+        let party = new Party(data.name);
+        party.id = data.id;
+        return party;
     }
 }

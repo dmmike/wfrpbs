@@ -18,6 +18,7 @@ export const store = new Vuex.Store({
             encounters: {},
         },
         combatants: [],
+        parties: [],
 
         // Selections
         activeCombatant: null,
@@ -92,6 +93,15 @@ export const store = new Vuex.Store({
         setCombatantWounds(state, {combatant, currentWounds}) {
             let combatantInState = state.combatants.find(com => com === combatant);
             Vue.set(combatantInState, 'currentWounds', currentWounds);
+        },
+        saveParty(state, party) {
+            let p = state.parties.findIndex(par => par.id === party.id);
+            if (p !== -1) {
+                Vue.set(state.parties, p, party);
+            }
+            else {
+                state.parties.push(party);
+            }
         }
     },
     actions: {

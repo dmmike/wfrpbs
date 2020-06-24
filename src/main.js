@@ -11,7 +11,7 @@ import vuetify from '@/plugins/vuetify'
 //TODO: Implement clickoutside instead of custom solution
 import ClickOutside from "vuetify/lib/directives/click-outside";
 
-import {Character, Combatant, NPC} from "@/classes/Combatant";
+import {Character, Combatant, NPC, Party} from "@/classes/Combatant";
 
 import {store} from "@/store";
 
@@ -25,15 +25,17 @@ import {
     faCopy,
     faFeatherAlt,
     faHeart,
+    faPlus,
     faUserSlash
 } from '@fortawesome/free-solid-svg-icons'
 
-library.add(faFeatherAlt, faUserSlash, faCopy, faHeart, faBalanceScale, faBolt, faBed, faCheck);
+library.add(faFeatherAlt, faUserSlash, faCopy, faHeart, faBalanceScale, faBolt, faBed, faCheck, faPlus);
 
 
 Vue.prototype.$Combatant = Combatant;
 Vue.prototype.$Character = Character;
 Vue.prototype.$NPC = NPC;
+Vue.prototype.$Party = Party;
 
 Vue.component('font-awesome-icon', FontAwesomeIcon);
 Vue.config.productionTip = false;
