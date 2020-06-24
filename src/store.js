@@ -7,6 +7,7 @@ Vue.use(Vuex);
 export const DEFAULT_SETTINGS = {
     initiativeType: 'default',
     useMaxAdvantage: false,
+    autoAdvantageOnWounds: true,
 }
 
 export const store = new Vuex.Store({
@@ -95,7 +96,14 @@ export const store = new Vuex.Store({
         },
         setCombatantWounds(state, {combatant, currentWounds}) {
             let combatantInState = state.combatants.find(com => com === combatant);
+            if (state.autoAdvantageOnWounds && combatantInState.currentWounds > currentWounds && combatantInState.advantage > 0) {
+                Vue.set(combatantInState, 'advantage', 0);
+            }
             Vue.set(combatantInState, 'currentWounds', currentWounds);
+        },
+        setCombatantAdvantage(state, {combatant, advantage}) {
+            let combatantInState = state.combatants.find(com => com === combatant);
+            Vue.set(combatantInState, 'advantage', advantage);
         }
     },
     actions: {
@@ -148,7 +156,16 @@ export const store = new Vuex.Store({
                 combatant: combatant,
                 currentWounds: Math.min(Math.max(combatant.currentWounds - damage, 0), combatant.stats.w),
             })
-        }
+        },
+        plusAdvantage(context, combatant) {
+            context.commit('setCombatantAdvantage', {combatant: combatant, advantage: combatant.advantage + 1});
+        },
+        minusAdvantage(context, combatant) {
+            context.commit('setCombatantAdvantage', {combatant: combatant, advantage: Math.max(combatant.advantage - 1, 0)});
+        },
+        advantageToZero(context, combatant) {
+            context.commit('setCombatantAdvantage', {combatant: combatant, advantage: 0});
+        },
     },
 });
 

@@ -25,11 +25,12 @@ import {
     faCopy,
     faFeatherAlt,
     faHeart,
+    faMinus,
+    faPlus,
     faUserSlash
 } from '@fortawesome/free-solid-svg-icons'
 
-library.add(faFeatherAlt, faUserSlash, faCopy, faHeart, faBalanceScale, faBolt, faBed, faCheck);
-
+library.add(faFeatherAlt, faUserSlash, faCopy, faHeart, faBalanceScale, faBolt, faBed, faCheck, faPlus, faMinus);
 
 Vue.prototype.$Combatant = Combatant;
 Vue.prototype.$Character = Character;
@@ -40,7 +41,7 @@ Vue.config.productionTip = false;
 
 Vue.use(Dropdown);
 Vue.use(VueLodash, {lodash: lodash});
-Vue.directive('v-click-outside', ClickOutside);
+Vue.directive('click-outside', ClickOutside);
 Vue.config.productionTip = false
 
 new Vue({

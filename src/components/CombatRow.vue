@@ -11,8 +11,16 @@
                 <font-awesome-icon id="confirm" icon="check" @click="damageCombatant"/>
             </div>
         </v-menu>
-        <td class="center clickable" v-if="useMaxAdvantage">{{combatant.advantage}} / {{combatant.advantageMax}}</td>
-        <td class="center" v-else>{{combatant.advantage}}</td>
+        <v-menu nudge-top="28%" nudge-left="5%" content-class="advantage-menu" v-model="advantage">
+            <template v-slot:activator="{on, attrs}">
+                <td class="center clickable" v-bind="attrs" v-on="on">{{combatant.advantage}}<template v-if="useMaxAdvantage"> / {{combatant.advantageMax}}</template></td>
+            </template>
+            <div style="display:flex">
+                <font-awesome-icon class="adv minus" @click="adv(-1)" icon="minus"/>
+                <span class="adv zero" @click="adv(0)">0</span>
+                <font-awesome-icon class="adv plus" @click="adv(1)" icon="plus"/>
+            </div>
+        </v-menu>
         <td></td>
     </tr>
 </template>
@@ -30,6 +38,7 @@
             return {
                 damage: 0,
                 wound: false,
+                advantage: false,
             }
         },
         computed: {
@@ -56,9 +65,9 @@
         },
         methods: {
             ...mapMutations(['selectCombatant', 'ejectCombatant']),
-            ...mapActions(['dealDamage']),
+            ...mapActions(['dealDamage', 'plusAdvantage', 'minusAdvantage', 'advantageToZero']),
             combatantClicked(event) {
-                if (event.ctrlKey || event.altKey) {
+                if (event.altKey) {
                     this.ejectCombatant(this.combatant);
                 }
                 else {
@@ -73,6 +82,20 @@
             openDamage() {
                 this.damage = 0;
                 setTimeout(() => this.$refs.dmg.select(), 50);
+            },
+            adv(action) {
+                switch(action) {
+                    case 1:
+                        this.plusAdvantage(this.combatant);
+                        break;
+                    case -1:
+                        this.minusAdvantage(this.combatant);
+                        break;
+                    case 0:
+                        this.advantageToZero(this.combatant);
+                        break;
+                }
+                this.advantage = false;
             }
         }
     }
@@ -87,12 +110,9 @@
 
     .wounds-menu {
         overflow: hidden;
-        /*box-shadow: none !important;*/
         border-radius: 50px;
         border: 3px solid rgba(188, 202, 199, 1);
         background-color: rgba(255, 255, 255, 1);
-        /*background-image: url('~@/assets/background-columns.png');*/
-        /*background-size: 100% 100%;*/
         padding: 5px 10px;
     }
 
@@ -104,6 +124,50 @@
         margin-left: 10px;
         display:inline-block;
         width:auto;
+    }
+
+    .advantage-menu {
+        width: 90px;
+        padding:0;
+        height: 60px;
+        border: none;
+        background-color: transparent;
+        box-shadow: none !important;
+        display:flex;
+    }
+
+    .adv {
+        position:relative;
+        display: inline-block;
+        text-align: center;
+        width: 26px;
+        height:26px;
+        border-radius: 15px;
+        border: 2px solid black;
+        color:white;
+        font-weight: bold;
+        cursor:pointer;
+    }
+
+    .minus, .plus {
+        top: 30px;
+        padding: 0 4px;
+    }
+
+    .minus {
+        background-color: darkred;
+    }
+
+    .plus {
+        background-color: forestgreen;
+    }
+
+    .zero {
+        margin: 0 calc((90px - 3*26px)/2);
+        vertical-align: middle;
+        line-height: 26px;
+        font-size: larger;
+        background-color:#0c5460;
     }
 
     #damage {
