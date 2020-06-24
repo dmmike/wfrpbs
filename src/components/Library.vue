@@ -2,21 +2,21 @@
     <div id="library">
         <h2 class="title">Library <img class="close-button" src="@/assets/close.png" @click="closeLibrary"></h2>
         <div id="tabs" class="row">
-            <div class="col" :class="{active: tab===0}" @click="tab=0">
+            <div class="col" :class="{active: libraryTab===0}" @click="setLibraryTab(0)">
                 <transition name="banner">
-                    <img v-if="tab===0" src="@/assets/banner.png">
+                    <img v-if="libraryTab===0" src="@/assets/banner.png">
                 </transition>
                 <span class="tab-title">Bestiary</span>
             </div>
-            <div class="col" :class="{active: tab===1}" @click="tab=1">
+            <div class="col" :class="{active: libraryTab===1}" @click="setLibraryTab(1)">
                 <transition name="banner">
-                    <img v-if="tab===1" src="@/assets/banner.png">
+                    <img v-if="libraryTab===1" src="@/assets/banner.png">
                 </transition>
                 <span class="tab-title">Characters</span>
             </div>
-            <div class="col" :class="{active: tab===2}" @click="tab=2">
+            <div class="col" :class="{active: libraryTab===2}" @click="setLibraryTab(2)">
                 <transition name="banner">
-                    <img v-if="tab===2" src="@/assets/banner.png">
+                    <img v-if="libraryTab===2" src="@/assets/banner.png">
                 </transition>
                 <span class="tab-title">Encounters</span>
             </div>
@@ -24,9 +24,9 @@
 
         <div id="library-content">
             <transition name="fade" mode="out-in">
-                <bestiary-content key="npcs" :npcs="true" :bestiary="library.bestiary" v-if="tab===0"></bestiary-content>
-                <bestiary-content key="characters" :npcs="false" :bestiary="library.characters" v-if="tab===1"></bestiary-content>
-<!--                <encounters-content :encounters="library.encounters" v-if="tab===2"></encounters-content>-->
+                <bestiary-content key="npcs" :npcs="true" :bestiary="library.bestiary" v-if="libraryTab===0"></bestiary-content>
+                <bestiary-content key="characters" :npcs="false" :bestiary="library.characters" v-if="libraryTab===1"></bestiary-content>
+<!--                <encounters-content :encounters="library.encounters" v-if="libraryTab===2"></encounters-content>-->
             </transition>
         </div>
     </div>
@@ -41,14 +41,11 @@
         components: {
             BestiaryContent
         },
-        computed: mapState(['library']),
-        data() {
-            return {
-                tab: 0
-            }
+        computed: {
+            ...mapState(['library', 'libraryTab']),
         },
         methods: {
-            ...mapMutations(['closeLibrary'])
+            ...mapMutations(['closeLibrary', 'setLibraryTab'])
         }
     }
 </script>

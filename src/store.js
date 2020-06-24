@@ -27,6 +27,7 @@ export const store = new Vuex.Store({
         loading: true,
         combatStarted: false,
         libraryOpen: false,
+        libraryTab: 0,
 
         // Settings
         ...DEFAULT_SETTINGS
@@ -89,6 +90,9 @@ export const store = new Vuex.Store({
             }
             state.loading = false;
         },
+        setLibraryTab(state, value) {
+            state.libraryTab = value;
+        },
         setCombatantWounds(state, {combatant, currentWounds}) {
             let combatantInState = state.combatants.find(com => com === combatant);
             Vue.set(combatantInState, 'currentWounds', currentWounds);
@@ -132,6 +136,11 @@ export const store = new Vuex.Store({
                 }
             }
 
+            Object.keys(context.state).forEach(key => {
+                if (savedState[key] === undefined) {
+                    savedState[key] = context.state[key];
+                }
+            })
             context.commit('finishLoading', savedState);
         },
         dealDamage(context, {combatant, damage}) {

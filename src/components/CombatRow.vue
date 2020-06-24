@@ -2,7 +2,7 @@
     <tr @click="combatantClicked">
         <td class="center">{{formattedInitiative}}</td>
         <td>{{combatant.name}} <template v-if="showNo">{{combatant.no}}</template></td>
-        <v-menu offset-y offset-overflow :close-on-content-click="false" content-class="wounds-menu" :return-value="damage" v-model="wound">
+        <v-menu offset-y offset-overflow :close-on-content-click="false" content-class="wounds-menu" v-model="wound">
             <template v-slot:activator="{on, attrs}">
                 <td class="center clickable" @click="openDamage" v-bind="attrs" v-on="on">{{combatant.currentWounds}} / {{combatant.stats.w}}</td>
             </template>
