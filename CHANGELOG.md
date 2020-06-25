@@ -5,6 +5,7 @@
 - Automatically set advantage of character to 0 if it takes any damage
 - Add filter for unique/non-unique NPCs in bestiary
 - Add state versioning and backwards compatibility
+- Set `updated_at` whenever it is saved
 
 ##[0.4.0]
 - Further implement Vuex, major refactor of use of variables and saving of state

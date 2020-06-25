@@ -146,6 +146,7 @@ export const store = new Vuex.Store({
             if (savedState) {
                 if (savedState.version !== LATEST_VERSION) {
                     savedState = normalizeSavedState(savedState);
+                    savedState.updated_at = now();
                     localStorage.setItem('savedState', JSON.stringify(savedState))
                 }
 
@@ -210,5 +211,16 @@ export const store = new Vuex.Store({
 
 store.subscribe(({type, payload}, state) => {
     if (type === 'finishLoading') return;
+    state.updated_at = now();
     localStorage.setItem('savedState', JSON.stringify(state));
 })
+
+let now = () => {
+    let currentdate = new Date();
+    return + currentdate.getDate() + "-"
+        + (currentdate.getMonth()+1)  + "-"
+        + currentdate.getFullYear() + " "
+        + currentdate.getHours() + ":"
+        + currentdate.getMinutes() + ":"
+        + currentdate.getSeconds();
+};
