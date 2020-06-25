@@ -180,6 +180,9 @@ export const store = new Vuex.Store({
             }
             else {
                 state.activeCombatant = null;
+                state.combatants.forEach(combatant => {
+                    store.commit('setCombatantAdvantage', {combatant: combatant, advantage: 0})
+                })
             }
         },
         setCombatants(state, combatants) {

@@ -10,6 +10,7 @@
 - Start/stop combat by clicking the initiative icon in the central table
 - Next/previous combatant by buttons or N/AltN
 - Combat round tracking
+- Remove all NPCs from combat when hitting the `finish combat` button
 
 ##[0.4.0]
 - Further implement Vuex, major refactor of use of variables and saving of state
