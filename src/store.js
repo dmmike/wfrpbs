@@ -70,7 +70,9 @@ export const store = new Vuex.Store({
         ...DEFAULT_SETTINGS
     },
     getters: {
-        allTraits() {return TraitsAndTalents.TRAITS},
+        allTraits() {
+            return TraitsAndTalents.TRAITS
+        },
         combatantsWithNumbers(state) {
             let idsFound = [];
             let ids = [];
@@ -130,6 +132,37 @@ export const store = new Vuex.Store({
 
             if (combatant === state.selectedCombatant) store.commit('deselectCombatant');
         },
+        addCombatantAtRightSpot(state, comb) {
+            let insertIndex = 0;
+            let tiesToResolve = [];
+
+            state.combatants.forEach((combatant, index) => {
+                if (combatant.initiative > comb.initiative) {
+                    insertIndex = index + 1;
+                } else if (combatant.initiative === comb.initiative) {
+                    tiesToResolve.push(combatant);
+                }
+            })
+
+            if (insertIndex === state.combatants.length) {
+                state.combatants.push(comb);
+            } else if (tiesToResolve.length > 0) {
+                tiesToResolve.push(comb);
+                tiesToResolve.sort((a, b) => {
+                    let results = Roller.opposedTest({target: a.stats.agi.value, modifier: 0}, {target: b.stats.agi.value, modifier: 0});
+                    return results.winner === 'A' ? -1 : 1;
+                })
+                let indexInTie = tiesToResolve.findIndex(c => c === comb);
+                insertIndex = insertIndex + indexInTie;
+                if (insertIndex === state.combatants.length) {
+                    state.combatants.push(comb);
+                } else {
+                    state.combatants.splice(insertIndex, 0, comb);
+                }
+            } else {
+                state.combatants.splice(insertIndex, 0, comb);
+            }
+        },
         addCombatant(state, combatant) {
             if (combatant.isUnique === false) {
                 let clone = combatant.clone();
@@ -141,12 +174,28 @@ export const store = new Vuex.Store({
                 })
                 Vue.set(clone, 'no', highestNo + 1);
                 Vue.set(clone, 'currentWounds', clone.stats.w);
-                Vue.set(clone, 'initiative', clone.getInitiative());
-                state.combatants.push(clone);
-            }
-            else if (state.combatants.findIndex(com => com.id === combatant.id) === -1) {
-                Vue.set(combatant, 'initiative', combatant.getInitiative());
-                state.combatants.push(combatant);
+                if (highestNo) {
+                    let index = state.combatants.findIndex(c => c.id === combatant.id && c.no === highestNo) + 1;
+                    Vue.set(clone, 'initiative', state.combatants[index].initiative);
+                    if (index === state.combatants.length) {
+                        state.combatants.push(clone);
+                    } else {
+                        state.combatants.splice(index, 0, clone);
+                    }
+                } else if (state.combatStarted) {
+                    Vue.set(clone, 'initiative', clone.getInitiative());
+                    store.commit('addCombatantAtRightSpot', clone);
+                }
+                else {
+                    state.combatants.push(clone);
+                }
+            } else if (state.combatants.findIndex(com => com.id === combatant.id) === -1) {
+                if (state.combatStarted) {
+                    Vue.set(combatant, 'initiative', combatant.getInitiative());
+                    store.commit('addCombatantAtRightSpot', combatant);
+                } else {
+                    state.combatants.push(combatant);
+                }
             }
         },
         finishLoading(state, data) {
@@ -177,8 +226,7 @@ export const store = new Vuex.Store({
             if (state.combatStarted) {
                 state.combatRound = 1;
                 state.activeCombatant = state.combatants[0];
-            }
-            else {
+            } else {
                 state.activeCombatant = null;
                 state.combatants.forEach(combatant => {
                     store.commit('setCombatantAdvantage', {combatant: combatant, advantage: 0})
@@ -190,15 +238,15 @@ export const store = new Vuex.Store({
         },
         setCombatantInitiative(state, {combatant, initiative}) {
             let combatantInState = state.combatants.find(com => com === combatant);
-            Vue.set(combatantInState, 'initiative',  initiative);
+            Vue.set(combatantInState, 'initiative', initiative);
         },
-        previousRound (state) {
+        previousRound(state) {
             state.combatRound--;
         },
-        nextRound (state) {
+        nextRound(state) {
             state.combatRound++;
         },
-        setActiveCombatantByIndex (state, index) {
+        setActiveCombatantByIndex(state, index) {
             state.activeCombatant = state.combatants[index];
         },
     },
@@ -223,8 +271,7 @@ export const store = new Vuex.Store({
                     if (Array.isArray(combs)) {
                         revived = [];
                         combs.forEach(combatant => revived.push(reviveCombatant(combatant)));
-                    }
-                    else {
+                    } else {
                         revived = {};
                         Object.keys(combs).forEach(id => {
                             Vue.set(revived, id, reviveCombatant(combs[id]));
@@ -263,7 +310,10 @@ export const store = new Vuex.Store({
             context.commit('setCombatantAdvantage', {combatant: combatant, advantage: combatant.advantage + 1});
         },
         minusAdvantage(context, combatant) {
-            context.commit('setCombatantAdvantage', {combatant: combatant, advantage: Math.max(combatant.advantage - 1, 0)});
+            context.commit('setCombatantAdvantage', {
+                combatant: combatant,
+                advantage: Math.max(combatant.advantage - 1, 0)
+            });
         },
         advantageToZero(context, combatant) {
             context.commit('setCombatantAdvantage', {combatant: combatant, advantage: 0});
@@ -272,8 +322,7 @@ export const store = new Vuex.Store({
             let combat_starts = !context.state.combatStarted;
             if (combat_starts) {
                 store.dispatch('determineInitiative').then(() => context.commit('toggleCombat'));
-            }
-            else {
+            } else {
                 context.state.combatants.forEach(combatant => {
                     context.commit('setCombatantAdvantage', {combatant: combatant, advantage: 0});
                 })
@@ -322,8 +371,7 @@ export const store = new Vuex.Store({
                             ids.forEach(id => {
                                 tiesToSolve.push(tiedCombatantsById[id][0]);
                             })
-                        }
-                        else {
+                        } else {
                             let combatantsToAdd = Object.values(tiedCombatantsById)[0];
                             if (combatantsToAdd.length > 0) {
                                 combatantsToAdd.sort((a, b) => a.no - b.no);
@@ -338,12 +386,12 @@ export const store = new Vuex.Store({
 
                     tiesToSolve
                         .sort((a, b) => {
-                            let results = Roller.opposedTest(a.stats.agi.value, b.stats.agi.value);
+                            let results = Roller.opposedTest({target: a.stats.agi.value, modifier: 0}, {target: b.stats.agi.value, modifier: 0});
                             return results.winner === 'A' ? -1 : 1;
                         })
                         .forEach(combatant => {
                             if (context.state.grouped) {
-                                tiedCombatantsById[combatant.id].sort((a, b) =>a.no ? a.no - b.no : 0).forEach(combatant => orderedCombatants.push(combatant));
+                                tiedCombatantsById[combatant.id].sort((a, b) => a.no ? a.no - b.no : 0).forEach(combatant => orderedCombatants.push(combatant));
                             } else {
                                 orderedCombatants.push(combatant);
                             }
@@ -359,8 +407,7 @@ export const store = new Vuex.Store({
             if (index === context.state.combatants.length - 1) {
                 context.commit('nextRound');
                 index = 0;
-            }
-            else {
+            } else {
                 index++;
             }
 
@@ -372,8 +419,7 @@ export const store = new Vuex.Store({
                 if (context.state.combatRound === 1) return
                 index = context.state.combatants.length - 1;
                 context.commit('previousRound');
-            }
-            else {
+            } else {
                 index--;
             }
 
@@ -402,8 +448,8 @@ store.subscribe(({type, payload}, state) => {
 
 let now = () => {
     let currentdate = new Date();
-    return + currentdate.getDate() + "-"
-        + (currentdate.getMonth()+1)  + "-"
+    return +currentdate.getDate() + "-"
+        + (currentdate.getMonth() + 1) + "-"
         + currentdate.getFullYear() + " "
         + currentdate.getHours() + ":"
         + currentdate.getMinutes() + ":"

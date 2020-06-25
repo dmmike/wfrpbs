@@ -11,6 +11,8 @@
 - Next/previous combatant by buttons or N/AltN
 - Combat round tracking
 - Remove all NPCs from combat when hitting the `finish combat` button
+- Fixed use of opposed rolls in tiebreaking
+- Added proper initiative order determination when adding new combatants
 
 ##[0.4.0]
 - Further implement Vuex, major refactor of use of variables and saving of state
