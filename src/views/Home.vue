@@ -49,6 +49,10 @@
 </script>
 
 <style>
+    .clickable {
+        cursor:pointer;
+    }
+
     .odd-row {
         background-color: rgba(188, 202, 199, 0.8);
     }

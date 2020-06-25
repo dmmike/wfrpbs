@@ -140,6 +140,8 @@ export class Combatant {
 
         comb.id = data.id;
         comb.currentWounds = data.currentWounds;
+        comb.initiative = data.initiative;
+        comb.advantage = data.advantage;
         return comb;
     }
 }

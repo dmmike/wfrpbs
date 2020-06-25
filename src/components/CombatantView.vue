@@ -1,7 +1,8 @@
 <template>
     <div id="combatant-view" :style="transform">
         <h3 class="combatant-name" :class="{editable: edit}">
-            <input :disabled="!edit" type="text" v-model="combatant.name">
+            <input v-if="edit" type="text" v-model="combatant.name">
+            <template v-else>{{combatant.name}} <template v-if="showNumber">{{combatant.no}}</template></template>
         </h3>
         <table class="stats-table">
             <tbody>
@@ -96,7 +97,7 @@
     import Dropdown from 'bp-vuejs-dropdown';
     import TraitsAndTalents from "@/classes/TraitsAndTalents";
     import TraitDisplay from "@/components/TraitDisplay";
-    import {mapGetters} from "vuex";
+    import {mapGetters, mapState} from "vuex";
 
     export default {
         name: "CombatantView",
@@ -122,7 +123,11 @@
             }
         },
         computed: {
-            ...mapGetters(['allTraits']),
+            ...mapState(['selectedCombatant']),
+            ...mapGetters(['allTraits', 'combatantsWithNumbers']),
+            showNumber() {
+                return !this.edit && this.combatantsWithNumbers.includes(this.combatant.id);
+            },
             st() {
                 return this.combatant.stats;
             },
@@ -251,7 +256,7 @@
         font-weight: bold;
     }
 
-    .combatant-name input {
+    .combatant-name {
         text-align: center;
         width: 100%;
     }

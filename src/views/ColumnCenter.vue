@@ -10,7 +10,7 @@
             <table id="combat-table">
                 <thead id="combat-table-header">
                 <tr>
-                    <th class="center" width="50px"><font-awesome-icon :icon="initiativeIcon"/></th>
+                    <th class="center clickable" width="50px" @click="toggleCombat"><font-awesome-icon :icon="initiativeIcon"/></th>
                     <th width="30%">Combatant</th>
                     <th class="center" width="80px"><font-awesome-icon icon="heart"/></th>
                     <th class="center" width="80px"><font-awesome-icon icon="balance-scale"/></th>
@@ -19,7 +19,7 @@
                 </thead>
                 <tbody id="combat-table-body" v-if="combatants.length > 0">
                     <combat-row v-for="(combatantData, index) in combatants"
-                                :class="{'odd-row': index%2 === 1, 'selected': selectedCombatant === combatantData}"
+                                :class="{'odd-row': index%2 === 1, 'selected': selectedCombatant === combatantData, 'active-combatant': activeCombatant === combatantData}"
                                 :combatant="combatantData"
                                 :show-no="combatantsWithNumbers.includes(combatantData.id)"
                                 :combat-started="combatStarted"
@@ -33,10 +33,9 @@
 </template>
 
 <script>
-    import Roller from "@/classes/Roller";
     import CombatRow from "@/components/CombatRow";
     import EditCharacter from "@/components/EditCharacter";
-    import {mapMutations, mapState} from "vuex";
+    import {mapActions, mapGetters, mapMutations, mapState} from "vuex";
 
     export default {
         name: "ColumnCenter",
@@ -55,26 +54,14 @@
         },
         data() {
             return {
-                combatStarted: false,
                 combatant: {},
                 showCharacterEditor: false,
                 createType: 'npc',
             }
         },
         computed: {
-            ...mapState(['combatants', 'library', 'selectedCombatant']),
-            combatantsWithNumbers() {
-                let idsFound = [];
-                let ids = [];
-                this.combatants.forEach(combatant => {
-                    if (idsFound.includes(combatant.id) && !ids.includes(combatant.id)) {
-                        ids.push(combatant.id);
-                    } else {
-                        idsFound.push(combatant.id);
-                    }
-                })
-                return ids;
-            },
+            ...mapState(['combatants', 'library', 'selectedCombatant', 'combatStarted', 'activeCombatant']),
+            ...mapGetters(['combatantsWithNumbers']),
             initiativeIcon() {
                 return this.combatStarted ? 'bolt' : 'bed';
             },
@@ -95,69 +82,7 @@
         },
         methods: {
             ...mapMutations(['ejectCombatant']),
-            determineInitiative() {
-                let combatantsByInitiative = [];
-
-                // Step 1. Determine the initiative of each combatant
-                this.combatants.forEach(combatant => {
-                    let initiative = combatant.getInitiative(this.initiativeType);
-                    if (this.initiativeType === 'test') {
-                        if (initiative.success_levels !== 0 || initiative.success) {
-                            initiative = initiative.success_levels;
-                        } else {
-                            initiative = -0.001
-                        }
-                    }
-                    combatant.initiative = initiative;
-                    if (!combatantsByInitiative[initiative]) {
-                        this.$set(combatantsByInitiative, initiative, []);
-                    }
-                    combatantsByInitiative[initiative].push(combatant);
-                })
-
-                // Step 2. Resolve ties
-                let orderedCombatants = [];
-                Object.keys(combatantsByInitiative).forEach(initiative => {
-                    if (combatantsByInitiative[initiative].length > 1) {
-                        let tiedCombatants = combatantsByInitiative[initiative];
-                        let tiedCombatantsById = {};
-
-                        let tiesToSolve = [];
-                        if (this.grouped) {
-                            tiedCombatants.forEach(combatant => {
-                                if (!tiedCombatantsById[combatant.id]) {
-                                    tiedCombatantsById[combatant.id] = [];
-                                }
-                                tiedCombatantsById[combatant.id].push(combatant);
-                            })
-
-                            let ids = Object.keys(tiedCombatantsById);
-                            if (ids.length > 1) {
-                                ids.forEach(id => {
-                                    tiesToSolve.push(tiedCombatantsById[id][0]);
-                                })
-                            }
-                        } else {
-                            tiesToSolve = tiedCombatants;
-                        }
-
-                        tiesToSolve.sort((a, b) => {
-                            let results = Roller.opposedTest(a.stats.agi.value, b.stats.agi.value);
-                            return results.winner === 'A' ? -1 : 1;
-                        }).forEach(combatant => {
-                            if (this.grouped) {
-                                tiedCombatantsById[combatant.id].sort((a, b) => a.no - b.no).forEach(combatant => orderedCombatants.push(combatant));
-                            } else {
-                                orderedCombatants.push(combatant);
-                            }
-                        })
-                    } else {
-                        orderedCombatants.push(combatantsByInitiative[initiative][0])
-                    }
-                })
-
-                this.$set(this, 'combatants', orderedCombatants);
-            },
+            ...mapActions(['toggleCombat']),
             newCombatant(type) {
                 //TODO: Implement warning when character already selected
                 this.combatant = null;
@@ -191,10 +116,11 @@
     #combat-table {
         width: 100%;
         margin: 0;
-        border-collapse: collapse;
+        border-collapse: separate;
+        border-spacing: 0px;
     }
 
-    #combat-table thead {
+    #combat-table thead th {
         background-color: rgba(163, 179, 175, 0.8);
         border-bottom: solid 3px black;
     }
@@ -205,7 +131,8 @@
 
     #combat-table th, #combat-table tbody td {
         padding: 0 5px;
-        border: 1px solid black;
+        border-right: 1px solid black;
+        border-bottom: 1px solid black;
     }
     #combat-table th:first-of-type, #combat-table th:last-of-type,
     #combat-table td:first-of-type, #combat-table td:last-of-type {
@@ -218,8 +145,8 @@
     }
 
     #combat-table tr {
-        line-height: 1.7em;
-        min-height: 1.7em;
+        line-height: 1.5em;
+        min-height: 1.5em;
         overflow-x: hidden;
     }
 
@@ -227,7 +154,37 @@
         background-color: rgba(0, 0, 0, 0.05);
     }
 
-    .selected {
-        border: 3px solid #720303;
+    #combat-table tr:not(.selected) td {
+        padding-top: 5px;
+        padding-bottom: 5px;
+    }
+
+    .selected td {
+        border-top: 5px solid #9a1111;
+        border-bottom: 5px solid #9a1111 !important;
+    }
+    .selected td:first-child {
+        border-left: 5px solid #9a1111 !important;
+    }
+    .selected td:last-child {
+        border-right: 5px solid #9a1111 !important;
+    }
+
+    .active-combatant {
+        font-weight: bold;
+        background: rgb(58,97,0);
+        background: linear-gradient(72deg, rgba(58,97,0,0.8099614845938375) 1%, rgba(58,97,0,0.09007352941176472) 11%, rgba(250,252,249,0) 45%);
+    }
+
+    .active-combatant td:first-child {
+        border-left: 5px solid #3a6100 !important;
+    }
+
+    .active-combatant td:last-child {
+        border-right: 5px solid #3a6100 !important;
+    }
+
+    #combat-table tbody tr td:first-child {
+        border-left: 5px solid transparent;
     }
 </style>
