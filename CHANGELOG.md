@@ -1,3 +1,7 @@
+##[0.5.1]
+- Changed `updated_at` to `updatedAt` in state
+- Fixed state normalisation object variable assignment 
+
 ##[0.5.0]
 - Damage/heal combatants by clicking their wounds or hitting the `d` key
 - Vuex implementation fixes

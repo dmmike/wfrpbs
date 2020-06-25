@@ -18,6 +18,9 @@ const normalisationPerStateVersion = {
         Object.values(savedState.combatants).filter(c => c.is_unique !== undefined).forEach(nf.alterIsUnique);
         if (savedState.activeCombatant && savedState.activeCombatant.is_unique !== undefined) nf.alterIsUnique(savedState.activeCombatant);
         if (savedState.selectedCombatant && savedState.selectedCombatant.is_unique !== undefined) nf.alterIsUnique(savedState.selectedCombatant);
+    },
+    '0.5.1': (savedState) => {
+        delete savedState.updated_at;
     }
 }
 
@@ -45,6 +48,7 @@ const LATEST_VERSION = Object.keys(normalisationPerStateVersion)[Object.keys(nor
 export const store = new Vuex.Store({
     state: {
         version: LATEST_VERSION,
+        updatedAt: '',
         // Data
         library: {
             bestiary: {},
@@ -255,8 +259,8 @@ export const store = new Vuex.Store({
             let savedState = JSON.parse(localStorage.getItem('savedState'));
             if (savedState) {
                 if (savedState.version !== LATEST_VERSION) {
-                    savedState = normalizeSavedState(savedState);
-                    savedState.updated_at = now();
+                    normalizeSavedState(savedState);
+                    savedState.updatedAt = now();
                     localStorage.setItem('savedState', JSON.stringify(savedState))
                 }
 
@@ -442,7 +446,7 @@ export const store = new Vuex.Store({
 
 store.subscribe(({type, payload}, state) => {
     if (type === 'finishLoading') return;
-    state.updated_at = now();
+    state.updatedAt = now();
     localStorage.setItem('savedState', JSON.stringify(state));
 })
 
