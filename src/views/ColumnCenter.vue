@@ -19,6 +19,7 @@
                 </thead>
                 <tbody id="combat-table-body" v-if="combatants.length > 0">
                     <combat-row v-for="(combatantData, index) in combatants"
+                                class="combat-row"
                                 :class="{'odd-row': index%2 === 1, 'selected': selectedCombatant === combatantData, 'active-combatant': activeCombatant === combatantData}"
                                 :combatant="combatantData"
                                 :show-no="combatantsWithNumbers.includes(combatantData.id)"
@@ -27,6 +28,22 @@
                                 :key="index"></combat-row>
                 </tbody>
             </table>
+            <template v-if="combatStarted">
+                <div class="bottom-row container">
+                    <div class="row" id="combat-options">
+                        <!--                                TODO: next turn button, previous turn button, finish combat button-->
+                        <div class="col-1 text-right">
+                            <font-awesome-icon class="clickable" icon="chevron-circle-up" @click="previousCombatant"/>
+                        </div>
+                        <div class="col-3">
+                            <font-awesome-icon class="clickable" icon="chevron-circle-down" @click="nextCombatant"/> Next combatant
+                        </div>
+                        <div class="col-3"></div>
+                        <div class="col-3"></div>
+                        <div class="col-2" id="round-counter"><strong>Round:</strong> {{combatRound}}</div>
+                    </div>
+                </div>
+            </template>
             <template v-if="combatants.length === 0">No combatants added yet</template>
         </div>
     </div>
@@ -60,7 +77,7 @@
             }
         },
         computed: {
-            ...mapState(['combatants', 'library', 'selectedCombatant', 'combatStarted', 'activeCombatant']),
+            ...mapState(['combatants', 'library', 'selectedCombatant', 'combatStarted', 'activeCombatant', 'combatRound']),
             ...mapGetters(['combatantsWithNumbers']),
             initiativeIcon() {
                 return this.combatStarted ? 'bolt' : 'bed';
@@ -77,12 +94,22 @@
                     case 'Delete':
                         if (this.selectedCombatant) this.ejectCombatant(this.selectedCombatant);
                         break;
+                    case 'KeyN':
+                        if (this.combatStarted) {
+                            if (event.altKey) {
+                                this.previousCombatant();
+                            } else {
+                                this.nextCombatant();
+                            }
+                        }
                 }
+
+                console.log(event);
             })
         },
         methods: {
             ...mapMutations(['ejectCombatant']),
-            ...mapActions(['toggleCombat']),
+            ...mapActions(['toggleCombat', 'nextCombatant', 'previousCombatant']),
             newCombatant(type) {
                 //TODO: Implement warning when character already selected
                 this.combatant = null;
@@ -123,25 +150,26 @@
     #combat-table thead th {
         background-color: rgba(163, 179, 175, 0.8);
         border-bottom: solid 3px black;
-    }
-
-    #combat-table thead th {
         border-top: none;
     }
 
-    #combat-table th, #combat-table tbody td {
+    #combat-table th, #combat-table .combat-row td {
         padding: 0 5px;
         border-right: 1px solid black;
         border-bottom: 1px solid black;
     }
-    #combat-table th:first-of-type, #combat-table th:last-of-type,
-    #combat-table td:first-of-type, #combat-table td:last-of-type {
+    #combat-table .combat-row td:first-of-type, #combat-table th:first-of-type {
         border-left: none;
+        padding-left: 5px;
+    }
+
+    #combat-table .combat-row td:last-of-type, #combat-table th:last-of-type {
+        padding-right: 5px;
         border-right: none;
     }
 
     #combat-table tr:last-of-type td {
-        border-bottom: none;
+        border-bottom: 1px solid transparent;
     }
 
     #combat-table tr {
@@ -150,11 +178,14 @@
         overflow-x: hidden;
     }
 
-    #combat-table tbody tr:hover td {
+    .combat-row {
+        cursor: default;
+    }
+    .combat-row:hover td {
         background-color: rgba(0, 0, 0, 0.05);
     }
 
-    #combat-table tr:not(.selected) td {
+    #combat-table .combat-row:not(.selected) td {
         padding-top: 5px;
         padding-bottom: 5px;
     }
@@ -165,9 +196,32 @@
     }
     .selected td:first-child {
         border-left: 5px solid #9a1111 !important;
+        padding-left: 0;
     }
     .selected td:last-child {
         border-right: 5px solid #9a1111 !important;
+        padding-right: 0;
+    }
+
+    .bottom-row.container {
+        border-top: 3px solid black;
+        /*border-bottom: 3px solid black;*/
+        background-color: rgba(163, 179, 175, 0.80);
+        padding: 0;
+    }
+
+    #combat-options>div {
+        padding: 3px;
+    }
+
+    #combat-options {
+        line-height: 1.5em;
+        margin: 0;
+        padding: 0 10px;
+        cursor: default;
+        -webkit-user-select: none; /* Chrome/Safari */
+        -moz-user-select: none; /* Firefox */
+        -ms-user-select: none; /* IE10+ */
     }
 
     .active-combatant {
@@ -184,7 +238,7 @@
         border-right: 5px solid #3a6100 !important;
     }
 
-    #combat-table tbody tr td:first-child {
-        border-left: 5px solid transparent;
+    #round-counter strong {
+        font-size: large;
     }
 </style>

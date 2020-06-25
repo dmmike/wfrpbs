@@ -185,7 +185,16 @@ export const store = new Vuex.Store({
         setCombatantInitiative(state, {combatant, initiative}) {
             let combatantInState = state.combatants.find(com => com === combatant);
             Vue.set(combatantInState, 'initiative',  initiative);
-        }
+        },
+        previousRound (state) {
+            state.combatRound--;
+        },
+        nextRound (state) {
+            state.combatRound++;
+        },
+        setActiveCombatantByIndex (state, index) {
+            state.activeCombatant = state.combatants[index];
+        },
     },
     actions: {
         loadData(context) {
@@ -341,7 +350,31 @@ export const store = new Vuex.Store({
             console.log(orderedCombatants);
             context.commit('setCombatants', orderedCombatants);
         },
+        nextCombatant(context) {
+            let index = context.state.combatants.findIndex(com => context.state.activeCombatant === com);
+            if (index === context.state.combatants.length - 1) {
+                context.commit('nextRound');
+                index = 0;
+            }
+            else {
+                index++;
+            }
 
+            context.commit('setActiveCombatantByIndex', index);
+        },
+        previousCombatant(context) {
+            let index = context.state.combatants.findIndex(com => context.state.activeCombatant === com);
+            if (index === 0) {
+                if (context.state.combatRound === 1) return
+                index = context.state.combatants.length - 1;
+                context.commit('previousRound');
+            }
+            else {
+                index--;
+            }
+
+            context.commit('setActiveCombatantByIndex', index);
+        },
     },
 });
 
