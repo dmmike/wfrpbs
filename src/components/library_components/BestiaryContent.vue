@@ -1,7 +1,16 @@
 <template>
     <div id="bestiary-content">
         <div id="list">
-            <input id="search-bar" type="search" v-model="filter" placeholder="Type to filter by name">
+            <div id="filters">
+                <div :style="'width:' + (npcs ? '80%' : '100%')">
+                    <input id="search-bar" type="search" v-model="filter" placeholder="Type to filter by name">
+                </div>
+                <select id="unique-filter" v-if="npcs" v-model="uniqueFilter">
+                    <option :value="null">All</option>
+                    <option :value="true">Unique</option>
+                    <option :value="false">Non-unique</option>
+                </select>
+            </div>
             <ul id="bestiary">
                 <li :class="index%2 === 0 ? 'odd-row' : 'even-row'" v-for="(combatant, index) in filteredBestiary" :key="index">
                     <v-tooltip open-delay="500" right>
@@ -40,11 +49,17 @@
             return {
                 filter: '',
                 hover: null,
+                uniqueFilter: null,
             }
         },
         computed: {
             filteredBestiary() {
-                return Object.values(this.bestiary).filter(c => this.filter === '' || c.name.toLowerCase().includes(this.filter.toLowerCase())).sort((a, b) => {
+                return Object.values(this.bestiary)
+                    //Filter based on string search
+                    .filter(c => this.filter === '' || c.name.toLowerCase().includes(this.filter.toLowerCase()))
+                    //Filter based on uniqueness
+                    .filter(c => this.uniqueFilter === null || c.isUnique === this.uniqueFilter)
+                    .sort((a, b) => {
                     return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
                 });
             }
@@ -114,5 +129,17 @@
         width: 100%;
         background-color: rgba(255, 255, 255, 0.8);
         border: solid black 1px;
+    }
+
+    #unique-filter {
+        padding-left: 5px;
+        width:20%;
+        background-color: rgba(255, 255, 255, 0.8);
+        border: solid black 1px;
+        -webkit-appearance: menulist;
+    }
+
+    #filters {
+        display:flex;
     }
 </style>
