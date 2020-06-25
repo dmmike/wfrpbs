@@ -123,6 +123,7 @@ export const store = new Vuex.Store({
             Vue.delete(state.library[combatant instanceof NPC ? 'bestiary' : 'characters'], combatant.id);
         },
         ejectCombatant(state, combatant) {
+            console.log(combatant);
             let no = combatant.no;
             state.combatants.splice(state.combatants.findIndex(c => {
                 return c.id === combatant.id && c.no === no;
@@ -177,6 +178,9 @@ export const store = new Vuex.Store({
             if (state.combatStarted) {
                 state.combatRound = 1;
                 state.activeCombatant = state.combatants[0];
+            }
+            else {
+                state.activeCombatant = null;
             }
         },
         setCombatants(state, combatants) {
@@ -346,8 +350,6 @@ export const store = new Vuex.Store({
                     orderedCombatants.push(combatantsByInitiative[initiative][0])
                 }
             })
-
-            console.log(orderedCombatants);
             context.commit('setCombatants', orderedCombatants);
         },
         nextCombatant(context) {
@@ -375,6 +377,18 @@ export const store = new Vuex.Store({
 
             context.commit('setActiveCombatantByIndex', index);
         },
+        finishCombat(context) {
+            store.dispatch('toggleCombat').then(() => {
+                let combatantsToEject = [];
+                context.state.combatants.forEach(combatant => {
+                    if (combatant instanceof NPC) {
+                        combatantsToEject.push(combatant);
+                    }
+                })
+
+                combatantsToEject.forEach((combatant) => context.commit('ejectCombatant', combatant));
+            })
+        }
     },
 });
 

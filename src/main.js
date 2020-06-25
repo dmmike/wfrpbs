@@ -21,6 +21,7 @@ import {
     faBalanceScale,
     faBed,
     faBolt,
+    faBroom,
     faCheck,
     faChevronCircleDown,
     faChevronCircleUp,
@@ -32,7 +33,21 @@ import {
     faUserSlash
 } from '@fortawesome/free-solid-svg-icons'
 
-library.add(faFeatherAlt, faUserSlash, faCopy, faHeart, faBalanceScale, faBolt, faBed, faCheck, faPlus, faMinus, faChevronCircleUp, faChevronCircleDown);
+library.add(
+    faFeatherAlt,
+    faUserSlash,
+    faCopy,
+    faHeart,
+    faBalanceScale,
+    faBolt,
+    faBed,
+    faCheck,
+    faPlus,
+    faMinus,
+    faChevronCircleUp,
+    faChevronCircleDown,
+    faBroom
+);
 
 Vue.prototype.$Combatant = Combatant;
 Vue.prototype.$Character = Character;

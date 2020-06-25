@@ -38,7 +38,9 @@
                         <div class="col-3">
                             <font-awesome-icon class="clickable" icon="chevron-circle-down" @click="nextCombatant"/> Next combatant
                         </div>
-                        <div class="col-3"></div>
+                        <div class="col-3">
+                            <font-awesome-icon class="clickable" icon="broom" @click="finishCombat"/> Finish combat
+                        </div>
                         <div class="col-3"></div>
                         <div class="col-2" id="round-counter"><strong>Round:</strong> {{combatRound}}</div>
                     </div>
@@ -103,13 +105,11 @@
                             }
                         }
                 }
-
-                console.log(event);
             })
         },
         methods: {
             ...mapMutations(['ejectCombatant']),
-            ...mapActions(['toggleCombat', 'nextCombatant', 'previousCombatant']),
+            ...mapActions(['toggleCombat', 'nextCombatant', 'previousCombatant', 'finishCombat']),
             newCombatant(type) {
                 //TODO: Implement warning when character already selected
                 this.combatant = null;
