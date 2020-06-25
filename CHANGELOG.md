@@ -7,6 +7,7 @@
 - Add state versioning and backwards compatibility
 - Set `updated_at` whenever it is saved
 - Updating a unique combatant updates their data throughout the application
+- Start/stop combat by clicking the initiative icon in the central table
 
 ##[0.4.0]
 - Further implement Vuex, major refactor of use of variables and saving of state
