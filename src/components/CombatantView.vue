@@ -57,7 +57,7 @@
                            @removeAll="removeAll"/>
         </div>
 
-        <label v-if="edit && isNPC">Unique NPC: <input type="checkbox" v-model="combatant.is_unique"></label>
+        <label v-if="edit && isNPC">Unique NPC: <input type="checkbox" v-model="combatant.isUnique"></label>
         <div id="edit-buttons" v-if="edit">
             <v-menu offset-y offset-overflow :close-on-content-click="false" attach="#edit-buttons"
                     content-class="drop-menu">

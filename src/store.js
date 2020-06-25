@@ -10,8 +10,39 @@ export const DEFAULT_SETTINGS = {
     autoAdvantageOnWounds: true,
 }
 
+const normalisationPerStateVersion = {
+    '0.5.0': (savedState) => {
+        Object.values(savedState.library.bestiary).forEach(nf.alterIsUnique);
+        Object.values(savedState.combatants).filter(c => c.is_unique !== undefined).forEach(nf.alterIsUnique);
+        if (savedState.activeCombatant && savedState.activeCombatant.is_unique !== undefined) nf.alterIsUnique(savedState.activeCombatant);
+        if (savedState.selectedCombatant && savedState.selectedCombatant.is_unique !== undefined) nf.alterIsUnique(savedState.selectedCombatant);
+    }
+}
+
+function normalizeSavedState(savedState) {
+    // Sort should be unnecessary, but is a precaution since object key order is not guaranteed
+    let versions = Object.keys(normalisationPerStateVersion).sort();
+    let pointer = versions.indexOf(version => version === savedState.version) + 1;
+
+    while (normalisationPerStateVersion[versions[pointer]] !== undefined) {
+        normalisationPerStateVersion[versions[pointer]](savedState);
+        savedState.version = versions[pointer];
+        pointer++;
+    }
+}
+
+// Normalizer helper functions
+const nf = {
+    alterIsUnique(combatant) {
+        combatant.isUnique = combatant.is_unique;
+    }
+}
+
+const LATEST_VERSION = Object.keys(normalisationPerStateVersion)[Object.keys(normalisationPerStateVersion).length - 1];
+
 export const store = new Vuex.Store({
     state: {
+        version: LATEST_VERSION,
         // Data
         library: {
             bestiary: {},
@@ -67,7 +98,7 @@ export const store = new Vuex.Store({
             if (combatant === state.selectedCombatant) store.commit('deselectCombatant');
         },
         addCombatant(state, combatant) {
-            if (combatant.is_unique === false) {
+            if (combatant.isUnique === false) {
                 let clone = combatant.clone();
                 let highestNo = 0;
                 state.combatants.forEach(c => {
@@ -100,6 +131,9 @@ export const store = new Vuex.Store({
                 Vue.set(combatantInState, 'advantage', 0);
             }
             Vue.set(combatantInState, 'currentWounds', currentWounds);
+            if (combatantInState.isUnique !== false) {
+                store.commit('saveCombatant', combatantInState);
+            }
         },
         setCombatantAdvantage(state, {combatant, advantage}) {
             let combatantInState = state.combatants.find(com => com === combatant);
@@ -110,6 +144,11 @@ export const store = new Vuex.Store({
         loadData(context) {
             let savedState = JSON.parse(localStorage.getItem('savedState'));
             if (savedState) {
+                if (savedState.version !== LATEST_VERSION) {
+                    savedState = normalizeSavedState(savedState);
+                    localStorage.setItem('savedState', JSON.stringify(savedState))
+                }
+
                 let reviveCombatant = (combatant) => {
                     if (combatant === null) return null;
                     let revived = Combatant.revive(combatant);

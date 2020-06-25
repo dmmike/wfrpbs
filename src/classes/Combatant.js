@@ -118,14 +118,14 @@ export class Combatant {
 
     static revive(data) {
         let comb;
-        if (data.is_unique !== undefined) {
+        if (data.isUnique !== undefined) {
             comb = new NPC(
                 data.name,
                 Stats.revive(data.stats),
                 data.traits,
                 data.talents,
                 data.skills,
-                data.is_unique
+                data.isUnique
             );
         }
         else {
@@ -176,10 +176,10 @@ export class NPC extends Combatant {
         traits = [],
         talents = [],
         skills = [],
-        is_unique = false
+        isUnique = false
     ) {
         super(name, stats, traits, talents, skills);
-        this.is_unique = is_unique;
+        this.isUnique = isUnique;
     }
 
     get armour() {
@@ -198,7 +198,7 @@ export class NPC extends Combatant {
             data.traits,
             data.talents,
             data.skills,
-            data.is_unique
+            data.isUnique
         );
 
         npc.id = data.id;
