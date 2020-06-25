@@ -70,7 +70,7 @@ export const store = new Vuex.Store({
         ...DEFAULT_SETTINGS
     },
     getters: {
-        allTraits(state) {return TraitsAndTalents.TRAITS},
+        allTraits() {return TraitsAndTalents.TRAITS},
         combatantsWithNumbers(state) {
             let idsFound = [];
             let ids = [];
@@ -123,7 +123,6 @@ export const store = new Vuex.Store({
             Vue.delete(state.library[combatant instanceof NPC ? 'bestiary' : 'characters'], combatant.id);
         },
         ejectCombatant(state, combatant) {
-            console.log(combatant);
             let no = combatant.no;
             state.combatants.splice(state.combatants.findIndex(c => {
                 return c.id === combatant.id && c.no === no;
