@@ -87,16 +87,18 @@ export class Combatant {
     getInitiative(type) {
         switch (type) {
             case 'test':
-                // Returns an object
-                return this.stats.i.dramaticTest(this.initiativeBonus);
+                let result = this.stats.i.dramaticTest(this.initiativeBonus);
+                if (result.successLevels !== 0) {
+                    return result.successLevels;
+                }
+                else {
+                    return result.success ? 0 : -0.1
+                }
             case 'init':
-                // Returns a number
                 return Roller.d10() + (this.stats.i + this.initiativeBonus);
             case 'bonus':
-                // Returns a number
                 return Roller.d10() + this.stats.i.b + this.stats.agi.b + Math.floor(this.initiativeBonus / 10);
             default:
-                // Returns a number
                 return this.initiativeBonus + this.stats.i.value + this.stats.agi.value/100;
         }
     }

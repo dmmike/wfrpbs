@@ -26,12 +26,13 @@ export default {
 
     /**
      * @param target: number
+     * @param modifier: number
      * @param roll: number
      * @return {{crit: boolean, success: boolean, roll: number}}
      */
-    dramaticTest(target, roll = this.d100()) {
-        let result = this.simpleTest(target, roll);
-        let successLevels = Math.floor(target/10) - Math.floor(roll/10);
+    dramaticTest(target, modifier = 0, roll = this.d100()) {
+        let result = this.simpleTest(target + modifier, roll);
+        let successLevels = Math.floor((target + modifier)/10) - Math.floor(roll/10);
         if (target > 100 && result.success) {
             successLevels += Math.floor((target-100) / 10);
         }
@@ -55,8 +56,8 @@ export default {
     opposedTest(targetA, targetB) {
         let winner = null, resultA, resultB;
         while (winner === null) {
-            resultA = this.dramaticTest(targetA.target + targetA.modifier);
-            resultB = this.dramaticTest(targetB.target + targetB.modifier);
+            resultA = this.dramaticTest(targetA.target, targetA.modifier);
+            resultB = this.dramaticTest(targetB.target, targetB.modifier);
 
             // If combatant A scored a better result, he wins
             if (resultA.successLevels > resultB.successLevels) {
@@ -68,12 +69,8 @@ export default {
             }
             // If it appears to be a tie, we check who wins
             else {
-                // If A and B are not both (un)successful, one scored -0 SL and the other +0
-                if (resultA.success !== resultB.success) {
-                    winner = resultA.success ? 'A' : 'B';
-                }
                 // If the results are the same, we check if base score is the same
-                else if (targetA.target !== targetB.target) {
+                if (targetA.target !== targetB.target) {
                     winner = targetA.target > targetB.target ? 'A' : 'B';
                 }
 

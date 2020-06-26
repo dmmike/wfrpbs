@@ -39,7 +39,7 @@ export default class Stats {
             }
 
             dramaticTest(modifier = 0) {
-                return Roller.dramaticTest(this.value + modifier);
+                return Roller.dramaticTest(this.value, modifier);
             }
         }
 
