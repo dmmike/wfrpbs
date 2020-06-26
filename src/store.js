@@ -116,10 +116,10 @@ export const store = new Vuex.Store({
                     combatantInState.initiative = state.combatants[index].initiative;
                     Vue.set(state.combatants, index, combatantInState);
 
-                    if (state.selectedCombatant.id === combatantInState.id) {
+                    if (state.selectedCombatant && state.selectedCombatant.id === combatantInState.id) {
                         state.selectedCombatant = state.combatants[index];
                     }
-                    if (state.activeCombatant.id === combatantInState.id) {
+                    if (state.activeCombatant && state.activeCombatant.id === combatantInState.id) {
                         state.activeCombatant = state.combatants[index];
                     }
                 }

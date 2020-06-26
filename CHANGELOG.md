@@ -1,3 +1,6 @@
+##[0.5.2]
+- Fix saving unique combatant when there is no active or selected combatant causing crashes
+
 ##[0.5.1]
 - Changed `updated_at` to `updatedAt` in state
 - Fixed state normalisation object variable assignment 

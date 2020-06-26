@@ -1,18 +1,20 @@
 <template>
     <div id="home">
-        <transition name="fade" mode="out-in">
-            <div v-if="loading">
-                Loading...
-            </div>
-            <div v-else>
-                <menu-bar></menu-bar>
-                <div id="column-container">
-                    <column-left class="small-column" @new="newCharacter"></column-left>
-                    <column-center ref="columnCenter" class="main-column"></column-center>
-                    <column-right class="small-column"></column-right>
+        <div id="home-container">
+            <transition name="fade" mode="out-in">
+                <div v-if="loading">
+                    Loading...
                 </div>
-            </div>
-        </transition>
+                <div v-else>
+                    <menu-bar></menu-bar>
+                    <div id="column-container">
+                        <column-left class="small-column" @new="newCharacter"></column-left>
+                        <column-center ref="columnCenter" class="main-column"></column-center>
+                        <column-right class="small-column"></column-right>
+                    </div>
+                </div>
+            </transition>
+        </div>
     </div>
 </template>
 
@@ -55,11 +57,17 @@
 
     .odd-row {
         background-color: rgba(188, 202, 199, 0.8);
+        -webkit-user-select: none; /* Chrome/Safari */
+        -moz-user-select: none; /* Firefox */
+        -ms-user-select: none; /* IE10+ */
     }
 
 
     .even-row {
         background-color: rgba(255, 255, 255, 0.8);
+        -webkit-user-select: none; /* Chrome/Safari */
+        -moz-user-select: none; /* Firefox */
+        -ms-user-select: none; /* IE10+ */
     }
 
     .center {
@@ -98,6 +106,10 @@
         min-height: 100vh;
         max-height: 100vh;
         width:100%;
+        min-width: 1500px;
+    }
+
+    #home-container {
         padding: 0 5%;
     }
 

@@ -205,7 +205,6 @@
 
     .bottom-row.container {
         border-top: 3px solid black;
-        /*border-bottom: 3px solid black;*/
         background-color: rgba(163, 179, 175, 0.80);
         padding: 0;
     }
