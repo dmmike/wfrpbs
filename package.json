@@ -1,6 +1,4 @@
 {
-  "name": "wfrpbs",
-  "version": "0.2.0",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve --open",

@@ -1,3 +1,7 @@
+##[UNRElEASED]
+- Removed version/name from package
+- Changed favicon 
+
 ##[0.5.2]
 - Fix saving unique combatant when there is no active or selected combatant causing crashes
 
