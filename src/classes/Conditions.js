@@ -8,12 +8,13 @@
 //     return result.success ? result.successLevels + 1 : 0;
 // }
 
-export default {
+// noinspection JSUnusedLocalSymbols
+export default Object.freeze({
     ablaze: {
         description: "<p>You are on fire! This Condition is normally only applied if you are flammable — for example: wearing clothes that can be set alight — but some magical and divine effects can set you alight even if you are not normally combustible!</p>" +
             "<p>At the end of every Round, you suffer 1d10 Wounds, modified by Toughness Bonus and the Armour Points on the least protected Hit Location, with a minimum of 1 Wound suffered. Each extra <i>Ablaze</i> Condition you have adds +1 to the Damage suffered; so, three <i>Ablaze</i> Conditions result in 1d10+2 Damage suffered.</p>" +
             "<p>One <i>Ablaze</i> Condition can be removed with a successful Athletics Test, with each SL removing an extra <i>Ablaze</i> Condition. The Difficulty for this Test is modified by circumstances: it’s much easier to put out a fire rolling around on sand than it is in the middle of an oil-soaked kitchen.</p>",
-        summary: count => '1d10' + (count>1 ? '+' + count : '') + ' damage at end of round',
+        summary: count => '1d10' + (count>1 ? '+' + (count -1) : '') + ' damage at end of round',
         // duringTurn(combatant, count) {
         //     return {
         //         remove: [
@@ -87,7 +88,7 @@ export default {
             "<p>You cannot Test to rally from being Broken if you are Engaged with an enemy (see page 159). If you are unengaged, at the end of each Round, you may attempt a Cool Test to remove a <i>Broken</i> Condition, with each SL removing an extra <i>Broken</i> Condition, and the Difficulty determined by the circumstances you currently find yourself: it is much easier to rally when hiding behind a barrel down an alleyway far from danger (Average +20) than it is when three steps from a slavering Daemon screaming for your blood (Very Hard –30).</p>" +
             "<p>If you spend a full Round in hiding out of line-of-sight of any enemy, you remove 1 <i>Broken</i> Condition.</p>" +
             "<p>Once all <i>Broken</i> Conditions are removed, gain 1 <i>Fatigued</i> Condition</p>",
-        summary: 'Must flee, ' + -10*count + ' penalty to all Tests not running/hiding.',
+        summary: count => 'Must flee, ' + -10*count + ' penalty to all Tests not running/hiding.',
         penalties: count => {return{flee: -10*count}},
         // endOfRound(combatant, count) {
         //     return {
@@ -104,7 +105,7 @@ export default {
     },
     deafened: {
         description: "<p>Whether caused by a loud noise or a blow to the head, you are unable to hear properly. You suffer a –10 penalty to all Tests involving hearing, and any opponent attacking you in close combat from the flank or rear gains an extra bonus of +10 to hit you (this bonus does not increase with multiple <i>Deafened</i> Conditions). One <i>Deafened</i> condition is removed at the end of every other Round and is often replaced with tinnitus.</p>",
-        summary: -10*count + ' to all Tests involving hearing, melee attacks against you from flank or rear have ' + count*10 + 'bonus.',
+        summary: count => -10*count + ' to all Tests involving hearing, melee attacks against you from flank or rear have ' + count*10 + 'bonus.',
         penalties: count => {return{hearing: -10*count, flank: 10*count}}
         // endOfRound(combatant, count) {
         //     return {
@@ -169,6 +170,6 @@ export default {
             "<p>The <i>Unconscious</i> Condition does not stack — you are either <i>Unconscious</i>, or you are not — so you do not collect multiple <i>Unconscious</i> Conditions.</p>" +
             "<p>Recovering from unconsciousness requires different circumstances depending upon why you fell unconscious. Refer to Injury on page 172 WFRP for more on this. If you spend a Resolve point to remove an <i>Unconscious</i> condition, but have not resolved the cause of the incapacitation, you gain another <i>Unconscious</i> Condition at the end of the round. When you lose the <i>Unconscious</i> Condition, you gain the <i>Prone</i> and <i>Fatigued</i> Conditions.</p>",
         summary: count => 'No Action or Movement, attacks automatically hit you.',
-        penalties: count => {},
+        stackable: false,
     },
-}
+})

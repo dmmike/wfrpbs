@@ -10,7 +10,6 @@ import lodash from 'lodash';
 import vuetify from '@/plugins/vuetify'
 //TODO: Implement clickoutside instead of custom solution
 import ClickOutside from "vuetify/lib/directives/click-outside";
-
 import {Character, Combatant, NPC} from "@/classes/Combatant";
 
 import {store} from "@/store";
@@ -26,27 +25,29 @@ import {
     faChevronCircleDown,
     faChevronCircleUp,
     faCopy,
+    faCrutch,
     faFeatherAlt,
     faHeart,
     faMinus,
     faPlus,
-    faUserSlash
+    faUserSlash,
 } from '@fortawesome/free-solid-svg-icons'
 
 library.add(
-    faFeatherAlt,
-    faUserSlash,
-    faCopy,
-    faHeart,
     faBalanceScale,
-    faBolt,
     faBed,
+    faBolt,
+    faBroom,
     faCheck,
-    faPlus,
-    faMinus,
-    faChevronCircleUp,
     faChevronCircleDown,
-    faBroom
+    faChevronCircleUp,
+    faCopy,
+    faFeatherAlt,
+    faHeart,
+    faMinus,
+    faPlus,
+    faUserSlash,
+    faCrutch,
 );
 
 Vue.prototype.$Combatant = Combatant;
@@ -60,6 +61,12 @@ Vue.use(Dropdown);
 Vue.use(VueLodash, {lodash: lodash});
 Vue.directive('click-outside', ClickOutside);
 Vue.config.productionTip = false
+
+Vue.filter('capitalize', function (value) {
+    if (!value) return ''
+    value = value.toString()
+    return value.charAt(0).toUpperCase() + value.slice(1)
+})
 
 new Vue({
     router,

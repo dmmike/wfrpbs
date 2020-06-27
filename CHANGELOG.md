@@ -1,4 +1,8 @@
-##[UNRElEASED]
+##[UNRELEASED]
+- Add conditions to combatant
+- Remove conditions from combatant
+- When hovering over condition in combat row, see its effect 
+- Added conditions base info
 - Removed version/name from package
 - Changed favicon 
 

@@ -144,6 +144,7 @@ export class Combatant {
         comb.currentWounds = data.currentWounds;
         comb.initiative = data.initiative;
         comb.advantage = data.advantage;
+        comb.conditions = data.conditions;
         return comb;
     }
 }

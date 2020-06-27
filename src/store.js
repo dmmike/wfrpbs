@@ -3,6 +3,7 @@ import TraitsAndTalents from "@/classes/TraitsAndTalents";
 import {Combatant, NPC} from "@/classes/Combatant";
 import Vue from 'vue';
 import Roller from "@/classes/Roller";
+import Conditions from "@/classes/Conditions";
 
 Vue.use(Vuex);
 export const DEFAULT_SETTINGS = {
@@ -74,8 +75,10 @@ export const store = new Vuex.Store({
         ...DEFAULT_SETTINGS
     },
     getters: {
-        allTraits() {
-            return TraitsAndTalents.TRAITS
+        allTraits() {return TraitsAndTalents.TRAITS},
+        allConditions() {return Conditions},
+        sortedConditions() {
+            return Object.keys(Conditions).sort();
         },
         combatantsWithNumbers(state) {
             let idsFound = [];
@@ -252,6 +255,28 @@ export const store = new Vuex.Store({
         },
         setActiveCombatantByIndex(state, index) {
             state.activeCombatant = state.combatants[index];
+        },
+        addCondition(state, {combatant, condition}) {
+            let combatantInState = state.combatants.find(com => com === combatant);
+            if (combatantInState.conditions[condition]) {
+                if (Conditions[condition].stackable !== false) {
+                    Vue.set(combatantInState.conditions[condition], 'count', combatantInState.conditions[condition].count + 1);
+                }
+            } else {
+                Vue.set(combatantInState.conditions, condition, {count: 1});
+            }
+        },
+        removeCondition(state, {combatant, condition, all = false}) {
+            let combatantInState = state.combatants.find(com => com === combatant);
+            if (combatantInState.conditions[condition]) {
+                let currentCount = combatantInState.conditions[condition].count;
+                if (all || combatantInState.conditions[condition].count <= 1) {
+                    Vue.delete(combatantInState.conditions, condition);
+                }
+                else {
+                    Vue.set(combatantInState.conditions[condition], 'count', currentCount - 1);
+                }
+            }
         },
     },
     actions: {

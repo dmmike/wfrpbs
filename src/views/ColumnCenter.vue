@@ -11,16 +11,16 @@
                 <thead id="combat-table-header">
                 <tr>
                     <th class="center clickable" width="50px" @click="toggleCombat"><font-awesome-icon :icon="initiativeIcon"/></th>
-                    <th width="30%">Combatant</th>
+                    <th width="25%">Combatant</th>
                     <th class="center" width="80px"><font-awesome-icon icon="heart"/></th>
-                    <th class="center" width="80px"><font-awesome-icon icon="balance-scale"/></th>
+                    <th class="center" width="40px"><font-awesome-icon icon="balance-scale"/></th>
                     <th width="auto">Conditions/Effects</th>
                 </tr>
                 </thead>
                 <tbody id="combat-table-body" v-if="combatants.length > 0">
                     <combat-row v-for="(combatantData, index) in combatants"
                                 class="combat-row"
-                                :class="{'odd-row': index%2 === 1, 'selected': selectedCombatant === combatantData, 'active-combatant': activeCombatant === combatantData}"
+                                :class="{'odd-row': index%2 === 1, 'even-row': index%2 !== 1, 'selected': selectedCombatant === combatantData, 'active-combatant': activeCombatant === combatantData}"
                                 :combatant="combatantData"
                                 :show-no="combatantsWithNumbers.includes(combatantData.id)"
                                 :combat-started="combatStarted"
@@ -79,7 +79,7 @@
             }
         },
         computed: {
-            ...mapState(['combatants', 'library', 'selectedCombatant', 'combatStarted', 'activeCombatant', 'combatRound']),
+            ...mapState(['combatants', 'library', 'selectedCombatant', 'combatStarted', 'activeCombatant', 'combatRound', 'useMaxAdvantage']),
             ...mapGetters(['combatantsWithNumbers']),
             initiativeIcon() {
                 return this.combatStarted ? 'bolt' : 'bed';
@@ -144,7 +144,7 @@
         width: 100%;
         margin: 0;
         border-collapse: separate;
-        border-spacing: 0px;
+        border-spacing: 0;
     }
 
     #combat-table thead th {
@@ -172,6 +172,11 @@
         border-bottom: 1px solid transparent;
     }
 
+    #combat-table td {
+        min-height: 1.5em;
+        line-height: 1.5em;
+    }
+
     #combat-table tr {
         line-height: 1.5em;
         min-height: 1.5em;
@@ -181,8 +186,18 @@
     .combat-row {
         cursor: default;
     }
-    .combat-row:hover td {
+    .odd-row:hover td {
         background-color: rgba(0, 0, 0, 0.05);
+        -webkit-transition: background-color 100ms linear;
+        -ms-transition: background-color 100ms linear;
+        transition: background-color 100ms linear;
+    }
+
+    .even-row:hover td {
+        background-color: rgba(0, 0, 0, 0.15);
+        -webkit-transition: background-color 100ms linear;
+        -ms-transition: background-color 100ms linear;
+        transition: background-color 100ms linear;
     }
 
     #combat-table .combat-row:not(.selected) td {
@@ -198,7 +213,7 @@
         border-left: 5px solid #9a1111 !important;
         padding-left: 0;
     }
-    .selected td:last-child {
+    .selected td:last-of-type {
         border-right: 5px solid #9a1111 !important;
         padding-right: 0;
     }
