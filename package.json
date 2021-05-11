@@ -12,7 +12,7 @@
     "@fortawesome/vue-fontawesome": "^0.1.10",
     "bootstrap": "^4.5.0",
     "bootstrap-vue": "^2.15.0",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.21",
     "vue": "^2.6.11",
     "vue-click-outside": "^1.1.0",
     "vue-lodash": "^2.1.2",
